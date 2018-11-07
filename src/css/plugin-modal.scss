@@ -1,0 +1,70 @@
+@import './FigmaIcons';
+
+.v--modal-overlay[data-modal='pluginManagerModal'] {
+	height: 0px;
+	width: 0px;
+	.v--modal-box {
+		box-shadow: 0 0 0.5px 0.5px rgba(0, 0, 0, 0.2), 0 2px 14px rgba(0, 0, 0, 0.15);
+		overflow: hidden;
+		background: #f8f8f8;
+	}
+}
+
+.overlay-fade-enter-active,
+.overlay-fade-leave-active {
+	transition: all 0s !important;
+}
+
+.modal-large-header {
+	height: 48px;
+	width: 100%;
+	background: #2c2c2c;
+	color: #fff;
+	position: relative;
+	.modal-close-button {
+		height: 48px;
+		width: 48px;
+	}
+	.modal-header-title {
+		font-size: 14px;
+		line-height: 20px;
+		padding: 0 12px;
+	}
+}
+
+.modal-header-title {
+	font-size: 12px;
+	letter-spacing: 0.2px;
+	-webkit-font-smoothing: antialiased;
+	line-height: 36px;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	left: 12px;
+	margin-right: 36px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	width: calc(100% - 60px);
+}
+
+.modal-close-button {
+	font-family: 'FigmaIcons';
+	-webkit-font-smoothing: antialiased;
+	height: 36px;
+	width: 36px;
+	font-size: 10px;
+	position: absolute;
+	right: 0;
+	opacity: 0.3;
+	&:after {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		content: '\101';
+	}
+	&:hover {
+		opacity: 1;
+	}
+}
