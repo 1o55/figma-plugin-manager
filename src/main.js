@@ -4,10 +4,10 @@ import VModal from 'vue-js-modal';
 Vue.config.productionTip = false;
 Vue.use(VModal);
 
-let notificationIconChecktimer;
-let contentChecktimer;
-
 window.addEventListener('load', () => {
+	let projectsPageLoaded = false;
+	let fileLoaded = false;
+	let menuOpened = false;
 	const reactPage = document.getElementById('react-page');
 	const app = document.createElement('div');
 	app.id = 'pluginManagerApp';
@@ -16,45 +16,37 @@ window.addEventListener('load', () => {
 		el: '#pluginManagerApp',
 		render: h => h(App)
 	});
-
-	if (/figma.com\/files\//.test(window.location.href)) {
-		notificationIconChecktimer = setInterval(checkForNotificationIcon, 100);
-	}
-	contentChecktimer = setInterval(checkForContent, 1000);
-});
-
-function checkForNotificationIcon() {
-	if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && notificationIconChecktimer) {
-		clearInterval(notificationIconChecktimer);
-		notificationIconChecktimer = false;
-
-		injectManagerButton();
-	}
-}
-
-function checkForContent() {
-	if (document.querySelector('div[class*="content-14"]') !== null) {
-		clearInterval(contentChecktimer);
-		contentChecktimer = false;
-		contentObserver.observe(document.querySelector('div[class*="content-14"]'), {
-			attributes: false,
-			characterData: false,
-			childList: true,
-			subtree: false,
-			attributeOldValue: false,
-			characterDataOldValue: false
+	new MutationObserver(mutations => {
+		mutations.forEach(() => {
+			if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !projectsPageLoaded) {
+				projectsPageLoaded = true;
+				window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
+			}
+			if (document.querySelector('[data-tooltip-text="Show notifications"]') === null && projectsPageLoaded) {
+				projectsPageLoaded = false;
+				window.dispatchEvent(new CustomEvent('projectsPageUnloaded'));
+			}
+			if (window.App._fullscreenIsReady && window.App._state.selectedView.fullscreen && !fileLoaded) {
+				fileLoaded = true;
+				window.dispatchEvent(new CustomEvent('fileLoaded'));
+			}
+			if (!window.App._state.selectedView.fullscreen && fileLoaded) {
+				fileLoaded = false;
+				window.dispatchEvent(new CustomEvent('fileUnloaded'));
+			}
+			if (window.App._state.dropdownShown !== null && !menuOpened) {
+				menuOpened = true;
+				window.dispatchEvent(new CustomEvent('menuOpened', { detail: window.App._state.dropdownShown }));
+			}
+			if (!window.App._state.dropdownShown && menuOpened) {
+				menuOpened = false;
+				window.dispatchEvent(new CustomEvent('menuClosed'));
+			}
 		});
-	}
-}
-
-var contentObserver = new MutationObserver(function(mutations) {
-	mutations.forEach(function(mutation) {
-		if (mutation.previousSibling === null && !notificationIconChecktimer && /figma.com\/files\//.test(window.location.href))
-			notificationIconChecktimer = setInterval(checkForNotificationIcon, 100);
-	});
+	}).observe(reactPage, { childList: true, subtree: true });
 });
 
-function injectManagerButton() {
+const injectManagerButton = () => {
 	const notificationButton = document.querySelector('[data-tooltip-text="Show notifications"]');
 	notificationButton.parentElement.style.display = 'flex';
 	const managerButton = document.createElement('div');
@@ -65,9 +57,30 @@ function injectManagerButton() {
 	managerButton.addEventListener(
 		'click',
 		function() {
-			console.log(window.pluginManagerVue.$children[0]);
 			window.pluginManagerVue.$children[0].toggleModal();
 		},
 		false
 	);
-}
+};
+
+window.addEventListener('projectsPageLoaded', () => {
+	injectManagerButton();
+});
+
+window.addEventListener('projectsPageUnloaded', () => {});
+
+window.addEventListener('fileLoaded', () => {});
+
+window.addEventListener('fileUnloaded', () => {});
+
+window.addEventListener('menuOpened', event => {});
+
+window.addEventListener('menuClosed', () => {});
+
+// window.addEventListener('load', () => {
+// 	new MutationObserver(mutations => {
+// 		mutations.forEach(mutation => {
+// 			console.log(window.App._state.dropdownShown);
+// 		});
+// 	}).observe(document.getElementById('react-page'), { childList: true, subtree: true });
+// });
