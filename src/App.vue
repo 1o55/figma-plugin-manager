@@ -209,7 +209,8 @@ export default {
 .no-installed-message {
 	font-size: 14px;
 	width: 460px;
-	height: 70vh;
+	height: 595px;
+	max-height: 70vh;
 	display: flex;
 	-webkit-box-orient: vertical;
 	-webkit-box-direction: normal;
