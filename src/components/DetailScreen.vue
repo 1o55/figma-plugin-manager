@@ -5,7 +5,8 @@
 			.title
 				.name {{ plugin.name }}
 				.author {{ plugin.author}}
-			button Install
+			button.primary(v-show='!installed' @click.stop='install') Install
+			button(v-show='installed' @click.stop='uninstall') Uninstall
 		.content
 			.section.image-section(v-if='plugin.images && plugin.images.length > 0' :class='{singleImage: plugin.images.length === 1}')
 					carousel(ref='carousel' :watch-items='plugin.images' prev-html='Ŕ' next-html='ŕ' loop)
@@ -40,7 +41,7 @@ import en from 'javascript-time-ago/locale/en';
 TimeAgo.addLocale(en);
 
 export default {
-	props: ['plugin'],
+	props: ['plugin', 'installed'],
 	data: () => ({
 		timeAgo: new TimeAgo('en-US')
 	}),
@@ -51,6 +52,12 @@ export default {
 	methods: {
 		backToList() {
 			this.$emit('backToList');
+		},
+		install() {
+			this.$emit('install', this.plugin);
+		},
+		uninstall() {
+			this.$emit('uninstall', this.plugin);
 		}
 	},
 	computed: {
@@ -130,6 +137,9 @@ export default {
 		&.image-section {
 			margin-bottom: 8px;
 			position: relative;
+		}
+		&.singleImage {
+			margin-bottom: 24px;
 		}
 	}
 	.v-carousel {

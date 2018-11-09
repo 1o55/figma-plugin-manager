@@ -67,12 +67,12 @@ const injectManagerButton = () => {
 };
 
 window.addEventListener('projectsPageLoaded', () => {
-	injectManagerButton();
+	if (document.querySelector('#managerButton') === null) injectManagerButton();
 });
 
 window.addEventListener('projectsPageChanged', () => {
 	window.pluginManagerVue.$children[0].hide();
-	injectManagerButton();
+	if (document.querySelector('#managerButton') === null) injectManagerButton();
 });
 
 window.addEventListener('projectsPageUnloaded', () => {

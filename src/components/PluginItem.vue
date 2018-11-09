@@ -4,16 +4,20 @@
 		//- .version {{ plugin.version }}
 		.author {{ plugin.author}}
 		.description {{ plugin.description }}
-		button Install
+		button(v-show='!installed && !installedScreenOn' @click.stop='install') Install
+		button(v-show='installed && !installedScreenOn' disabled='true') Installed
 		.chevron œ
 </template>
 
 <script>
 export default {
-	props: ['plugin'],
+	props: ['plugin', 'installed', 'installedScreenOn'],
 	methods: {
 		goToDetail(event) {
 			this.$emit('goToDetail', this.plugin);
+		},
+		install() {
+			this.$emit('install', this.plugin);
 		}
 	}
 };
