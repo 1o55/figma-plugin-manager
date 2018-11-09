@@ -1,35 +1,54 @@
 <template lang="pug">
-  #pluginManager
-    modal(name='pluginManagerModal' ref='modal' @opened='openModal' @closed='modalClosed' draggable='.modal-large-header' width='460' height='auto' maxHeight='642')
-      .modal-large-header
-        .modal-header-title Plugins
-        .modal-close-button(ref='closeButton' @click='hide')
-      .modal-content
-        .search-box
-          .search-icon ō
-          input(v-model='searchText' placeholder='Search' spellcheck='false')
-        .plugins-list-scroll-container
-          .empty-message(v-if='searchedPlugins.length === 0') No results for '{{ searchText }}'
-          .plugins-list
-          pluginItem(type='text' v-for='plugin in searchedPlugins' :key='plugin.name' :plugin='plugin')
+	#pluginManager
+		modal(name='pluginManagerModal' ref='modal' @opened='openModal' @closed='modalClosed' draggable='.modal-large-header' width='460' height='auto' maxHeight='642')
+			.modal-large-header
+				.modal-header-title Plugins
+				.modal-close-button(ref='closeButton' @click='hide')
+			.modal-content
+				.list-screen(:class='{detailScreenOn: detailScreenOn}')
+					.search-box
+						.search-icon ō
+						input(v-model='searchText' placeholder='Search' spellcheck='false')
+					.plugins-list-scroll-container
+						.empty-message(v-if='searchedPlugins.length === 0') No results for '{{ searchText }}'
+						pluginItem(type='text' v-for='plugin in searchedPlugins' :key='plugin.name' :plugin='plugin' @goToDetail='goToDetail')
+				detailScreen(:plugin='selectedPlugin' @backToList='detailScreenOn = false' :class='{detailScreenOn: detailScreenOn}')
 </template>
 
 <script>
 import PluginItem from './components/PluginItem';
+import DetailScreen from './components/DetailScreen';
 export default {
 	components: {
-		PluginItem
+		PluginItem,
+		DetailScreen
 	},
 	data: () => ({
 		modalOpened: false,
 		searchText: '',
+		selectedPlugin: {},
+		detailScreenOn: false,
 		plugins: [
 			{
 				name: 'Repeat Grids',
 				version: '0.0.1',
 				author: 'Tony Tung',
+				github: 'https://github.com/jachui/figma-pdf-export',
 				description:
-					"Enables users to quickly duplicate the selected layer in the grid layout, so it's easier to assemble list view, table view, or other organized UI layout with a single element."
+					"Enables users to quickly duplicate the selected layer in the grid layout, so it's easier to assemble list view, table view, or other organized UI layout with a single element.",
+				instructions:
+					"Enables users to quickly duplicate the selected layer in the grid layout, so it's easier to assemble list view, table view, or other organized UI layout with a single element.",
+				updates: [
+					{
+						version: '0.0.1',
+						date: '8/12/2018',
+						notes: 'Added a lot of features'
+					}
+				],
+				images: [
+					'https://github.com/jachui/figma-distributor/blob/master/screenshot.png?raw=true',
+					'https://github.com/jachui/figma-pdf-export/blob/master/screenshot.png?raw=true'
+				]
 			},
 			{
 				name: 'PDF Export',
@@ -73,14 +92,20 @@ export default {
 		},
 		openModal() {
 			document.querySelector('#managerButton').style.backgroundColor = '#30c2ff';
+			this.detailScreenOn = false;
 			this.modalOpened = true;
 		},
 		modalClosed() {
 			this.modalOpened = false;
+			this.detailScreenOn = false;
 			document.querySelector('#managerButton').style.backgroundColor = '';
 		},
 		toggleModal() {
 			this.modalOpened ? this.hide() : this.show();
+		},
+		goToDetail(plugin) {
+			this.selectedPlugin = plugin;
+			this.detailScreenOn = true;
 		}
 	}
 };
@@ -100,6 +125,14 @@ export default {
 	}
 	&:hover {
 		background-color: #050505;
+	}
+}
+
+.list-screen {
+	transition: transform 0.2s ease;
+	transform: translateX(0px);
+	&.detailScreenOn {
+		transform: translateX(-100%);
 	}
 }
 

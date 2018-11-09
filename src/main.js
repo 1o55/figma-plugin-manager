@@ -17,7 +17,7 @@ window.addEventListener('load', () => {
 		render: h => h(App)
 	});
 	new MutationObserver(mutations => {
-		mutations.forEach(() => {
+		mutations.forEach(mutation => {
 			if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !projectsPageLoaded) {
 				projectsPageLoaded = true;
 				window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
@@ -25,6 +25,9 @@ window.addEventListener('load', () => {
 			if (document.querySelector('[data-tooltip-text="Show notifications"]') === null && projectsPageLoaded) {
 				projectsPageLoaded = false;
 				window.dispatchEvent(new CustomEvent('projectsPageUnloaded'));
+			}
+			if (mutation.addedNodes[0] === document.querySelector('div[class*="top_bar--header--"]')) {
+				window.dispatchEvent(new CustomEvent('projectsPageChanged'));
 			}
 			if (window.App._fullscreenIsReady && window.App._state.selectedView.fullscreen && !fileLoaded) {
 				fileLoaded = true;
@@ -67,7 +70,14 @@ window.addEventListener('projectsPageLoaded', () => {
 	injectManagerButton();
 });
 
-window.addEventListener('projectsPageUnloaded', () => {});
+window.addEventListener('projectsPageChanged', () => {
+	window.pluginManagerVue.$children[0].hide();
+	injectManagerButton();
+});
+
+window.addEventListener('projectsPageUnloaded', () => {
+	window.pluginManagerVue.$children[0].hide();
+});
 
 window.addEventListener('fileLoaded', () => {});
 
@@ -80,7 +90,7 @@ window.addEventListener('menuClosed', () => {});
 // window.addEventListener('load', () => {
 // 	new MutationObserver(mutations => {
 // 		mutations.forEach(mutation => {
-// 			console.log(window.App._state.dropdownShown);
+// 			if (mutation.addedNodes[0] === document.querySelector('div[class*="top_bar--header--"]')) console.log(mutation);
 // 		});
 // 	}).observe(document.getElementById('react-page'), { childList: true, subtree: true });
 // });
