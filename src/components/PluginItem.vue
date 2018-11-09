@@ -47,6 +47,10 @@ export default {
 	.description {
 		margin-top: 8px;
 		color: #aaaaaa;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
 	}
 	button {
 		position: absolute;
