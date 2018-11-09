@@ -15,8 +15,8 @@
 	],
 	"web_accessible_resources": ["js/chunk-vendors.js", "js/app.js", "css/app.css"],
 	"js": [
-		"https://rawgit.com/jachui/figma-plugin-manager/master/dist/js/chunk-vendors.js",
-		"https://rawgit.com/jachui/figma-plugin-manager/master/dist/js/app.js"
+		"https://cdn.jsdelivr.net/gh/jachui/figma-plugin-manager/dist/js/chunk-vendors.js",
+		"https://cdn.jsdelivr.net/gh/jachui/figma-plugin-manager/dist/js/app.js"
 	],
-	"css": ["https://rawgit.com/jachui/figma-plugin-manager/master/dist/css/app.css"]
+	"css": ["https://cdn.jsdelivr.net/gh/jachui/figma-plugin-manager/dist/css/app.css"]
 }

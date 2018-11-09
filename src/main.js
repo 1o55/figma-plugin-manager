@@ -4,50 +4,48 @@ import VModal from 'vue-js-modal';
 Vue.config.productionTip = false;
 Vue.use(VModal);
 
-window.addEventListener('load', () => {
-	let projectsPageLoaded = false;
-	let fileLoaded = false;
-	let menuOpened = false;
-	const reactPage = document.getElementById('react-page');
-	const app = document.createElement('div');
-	app.id = 'pluginManagerApp';
-	reactPage.parentNode.insertBefore(app, reactPage.nextSibling);
-	window.pluginManagerVue = new Vue({
-		el: '#pluginManagerApp',
-		render: h => h(App)
-	});
-	new MutationObserver(mutations => {
-		mutations.forEach(mutation => {
-			if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !projectsPageLoaded) {
-				projectsPageLoaded = true;
-				window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
-			}
-			if (document.querySelector('[data-tooltip-text="Show notifications"]') === null && projectsPageLoaded) {
-				projectsPageLoaded = false;
-				window.dispatchEvent(new CustomEvent('projectsPageUnloaded'));
-			}
-			if (mutation.addedNodes[0] === document.querySelector('div[class*="top_bar--header--"]')) {
-				window.dispatchEvent(new CustomEvent('projectsPageChanged'));
-			}
-			if (window.App._fullscreenIsReady && window.App._state.selectedView.fullscreen && !fileLoaded) {
-				fileLoaded = true;
-				window.dispatchEvent(new CustomEvent('fileLoaded'));
-			}
-			if (!window.App._state.selectedView.fullscreen && fileLoaded) {
-				fileLoaded = false;
-				window.dispatchEvent(new CustomEvent('fileUnloaded'));
-			}
-			if (window.App._state.dropdownShown !== null && !menuOpened) {
-				menuOpened = true;
-				window.dispatchEvent(new CustomEvent('menuOpened', { detail: window.App._state.dropdownShown }));
-			}
-			if (!window.App._state.dropdownShown && menuOpened) {
-				menuOpened = false;
-				window.dispatchEvent(new CustomEvent('menuClosed'));
-			}
-		});
-	}).observe(reactPage, { childList: true, subtree: true });
+let projectsPageLoaded = false;
+let fileLoaded = false;
+let menuOpened = false;
+const reactPage = document.getElementById('react-page');
+const app = document.createElement('div');
+app.id = 'pluginManagerApp';
+reactPage.parentNode.insertBefore(app, reactPage.nextSibling);
+window.pluginManagerVue = new Vue({
+	el: '#pluginManagerApp',
+	render: h => h(App)
 });
+new MutationObserver(mutations => {
+	mutations.forEach(mutation => {
+		if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !projectsPageLoaded) {
+			projectsPageLoaded = true;
+			window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
+		}
+		if (document.querySelector('[data-tooltip-text="Show notifications"]') === null && projectsPageLoaded) {
+			projectsPageLoaded = false;
+			window.dispatchEvent(new CustomEvent('projectsPageUnloaded'));
+		}
+		if (mutation.addedNodes[0] === document.querySelector('div[class*="top_bar--header--"]')) {
+			window.dispatchEvent(new CustomEvent('projectsPageChanged'));
+		}
+		if (window.App._fullscreenIsReady && window.App._state.selectedView.fullscreen && !fileLoaded) {
+			fileLoaded = true;
+			window.dispatchEvent(new CustomEvent('fileLoaded'));
+		}
+		if (!window.App._state.selectedView.fullscreen && fileLoaded) {
+			fileLoaded = false;
+			window.dispatchEvent(new CustomEvent('fileUnloaded'));
+		}
+		if (window.App._state.dropdownShown !== null && !menuOpened) {
+			menuOpened = true;
+			window.dispatchEvent(new CustomEvent('menuOpened', { detail: window.App._state.dropdownShown }));
+		}
+		if (!window.App._state.dropdownShown && menuOpened) {
+			menuOpened = false;
+			window.dispatchEvent(new CustomEvent('menuClosed'));
+		}
+	});
+}).observe(reactPage, { childList: true, subtree: true });
 
 const injectManagerButton = () => {
 	const notificationButton = document.querySelector('[data-tooltip-text="Show notifications"]');
