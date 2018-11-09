@@ -1,6 +1,6 @@
 <template lang="pug">
 	#pluginManager
-		modal(name='pluginManagerModal' ref='modal' @opened='openModal' @closed='modalClosed' draggable='.modal-large-header' width='460' height='auto' maxHeight='642')
+		modal(name='pluginManagerModal' ref='modal' @opened='openModal' @closed='modalClosed' draggable='.modal-header' width='460' height='auto' maxHeight='642')
 			.modal-header.header-large
 				.modal-tabs
 					.modal-tab(:class='{"active-tab": !installedScreenOn}' @click='installedScreenOn = false, detailScreenOn = false, searchText = ""') Plugins

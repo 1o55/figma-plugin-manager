@@ -1,9 +1,12 @@
 @import './FigmaIcons';
 
+* {
+	user-select: none;
+}
+
 .v--modal-overlay {
 	height: 0px !important;
 	width: 0px !important;
-	user-select: none;
 	.v--modal-box {
 		box-shadow: 0 0 0.5px 0.5px rgba(0, 0, 0, 0.2), 0 2px 14px rgba(0, 0, 0, 0.15);
 		overflow: hidden;
