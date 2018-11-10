@@ -51,10 +51,10 @@ window.addEventListener('menuOpened', event => {});
 
 window.addEventListener('menuClosed', () => {});
 
-if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !projectsPageLoaded) {
-	projectsPageLoaded = true;
-	window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
-}
+// if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !projectsPageLoaded) {
+// 	projectsPageLoaded = true;
+// 	window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
+// }
 
 if (!window.__figmaDesktop) {
 	let projectsPageLoaded = false;
