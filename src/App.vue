@@ -149,6 +149,7 @@ export default {
 
 #pluginManager {
 	user-select: none;
+	cursor: default;
 }
 
 #managerButton {
