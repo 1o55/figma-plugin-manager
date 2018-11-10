@@ -40,7 +40,7 @@ export default {
 				author: 'Tony Tung',
 				github: 'https://github.com/jachui/figma-pdf-export',
 				description:
-					"Enables users to quickly duplicate the selected layer in the grid layout, so it's easier to assemble list view, table view, or other organized UI layout with a single element.Enables users to quickly duplicate the selected layer in the grid layout, so it's easier to assemble list view, table view, or other organized UI layout with a single element.",
+					"Enables users to quickly duplicate the selected layer in the grid layout, so it's easier to assemble list view, table view, or other organized UI layout with a single element.",
 				instructions:
 					"Enables users to quickly duplicate the selected layer in the grid layout, so it's easier to assemble list view, table view, or other organized UI layout with a single element.",
 				updates: [
@@ -150,7 +150,6 @@ export default {
 #pluginManager {
 	user-select: none;
 	cursor: default;
-	background: red;
 }
 
 #managerButton {
