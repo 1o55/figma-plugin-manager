@@ -4,6 +4,28 @@ import VModal from 'vue-js-modal';
 Vue.config.productionTip = false;
 Vue.use(VModal);
 
+window.addEventListener('projectsPageLoaded', () => {
+	console.log('found2');
+	if (document.querySelector('#managerButton') === null) injectManagerButton();
+});
+
+window.addEventListener('projectsPageChanged', () => {
+	window.pluginManagerVue.$children[0].hide();
+	if (document.querySelector('#managerButton') === null) injectManagerButton();
+});
+
+window.addEventListener('projectsPageUnloaded', () => {
+	window.pluginManagerVue.$children[0].hide();
+});
+
+window.addEventListener('fileLoaded', () => {});
+
+window.addEventListener('fileUnloaded', () => {});
+
+window.addEventListener('menuOpened', event => {});
+
+window.addEventListener('menuClosed', () => {});
+
 console.log('started main.js');
 let projectsPageLoaded = false;
 let fileLoaded = false;
@@ -72,27 +94,6 @@ const injectManagerButton = () => {
 		false
 	);
 };
-
-window.addEventListener('projectsPageLoaded', () => {
-	if (document.querySelector('#managerButton') === null) injectManagerButton();
-});
-
-window.addEventListener('projectsPageChanged', () => {
-	window.pluginManagerVue.$children[0].hide();
-	if (document.querySelector('#managerButton') === null) injectManagerButton();
-});
-
-window.addEventListener('projectsPageUnloaded', () => {
-	window.pluginManagerVue.$children[0].hide();
-});
-
-window.addEventListener('fileLoaded', () => {});
-
-window.addEventListener('fileUnloaded', () => {});
-
-window.addEventListener('menuOpened', event => {});
-
-window.addEventListener('menuClosed', () => {});
 
 // window.addEventListener('load', () => {
 // 	new MutationObserver(mutations => {
