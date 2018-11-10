@@ -17,6 +17,7 @@ window.pluginManagerVue = new Vue({
 });
 new MutationObserver(mutations => {
 	mutations.forEach(mutation => {
+		console.log(mutation);
 		if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !projectsPageLoaded) {
 			projectsPageLoaded = true;
 			window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
