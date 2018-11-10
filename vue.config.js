@@ -12,7 +12,7 @@ module.exports = {
 
 	configureWebpack: {
 		output: {
-			jsonpFunction: 'plugin-manager'
+			jsonpFunction: 'pluginManager'
 		},
 		plugins: [
 			new CopyWebpackPlugin([
