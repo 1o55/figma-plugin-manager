@@ -4,7 +4,6 @@ import VModal from 'vue-js-modal';
 Vue.config.productionTip = false;
 Vue.use(VModal);
 
-console.log('started main.js');
 let projectsPageLoaded = false;
 let fileLoaded = false;
 let menuOpened = false;
@@ -35,7 +34,6 @@ const injectManagerButton = () => {
 };
 
 window.addEventListener('projectsPageLoaded', () => {
-	console.log('found2');
 	if (document.querySelector('#managerButton') === null) injectManagerButton();
 });
 
@@ -57,14 +55,12 @@ window.addEventListener('menuOpened', event => {});
 window.addEventListener('menuClosed', () => {});
 
 if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !projectsPageLoaded) {
-	console.log('found');
 	projectsPageLoaded = true;
 	window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
-} else console.log('not found');
+}
 
 new MutationObserver(mutations => {
 	mutations.forEach(mutation => {
-		console.log(mutation);
 		if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !projectsPageLoaded) {
 			projectsPageLoaded = true;
 			window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
