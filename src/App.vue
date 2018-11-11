@@ -32,58 +32,7 @@ export default {
 		selectedPlugin: {},
 		detailScreenOn: false,
 		installedScreenOn: false,
-		plugins: [
-			{
-				id: 'repeat-grids',
-				name: 'Repeat Grids',
-				version: '0.0.1',
-				author: 'Tony Tung',
-				github: 'https://github.com/jachui/figma-pdf-export',
-				description:
-					"Enables users to quickly duplicate the selected layer in the grid layout, so it's easier to assemble list view, table view, or other organized UI layout with a single element.",
-				instructions:
-					"Enables users to quickly duplicate the selected layer in the grid layout, so it's easier to assemble list view, table view, or other organized UI layout with a single element.",
-				updates: [
-					{
-						version: '0.0.1',
-						date: '8/12/2018',
-						notes: 'Added a lot of features'
-					}
-				],
-				images: ['https://github.com/jachui/figma-distributor/blob/master/screenshot.png?raw=true']
-			},
-			{
-				id: 'pdf-export',
-				name: 'PDF Export',
-				version: '1.2.1',
-				author: 'Jackie Chui',
-				description:
-					"Export a PDF file containing all the frames in the current page. A new PDF option will be added to Figma's export picker."
-			},
-			{
-				id: 'layer-distributor',
-				name: 'Layer Distributor',
-				version: '1.2.3',
-				author: 'Jackie Chui',
-				description:
-					'Distribute layers with consistent spacing. Accessible via the alignment tools or keyboard shortcut (Ctrl/Cmd + Shift + D).'
-			},
-			{
-				id: 'batch-rename',
-				name: 'Batch Rename',
-				version: '1.0.0',
-				author: 'Ahmed Al-Haddad',
-				description: 'Rename multiple layers at the same time.'
-			},
-			{
-				id: 'find-and-replace',
-				name: 'Find and Replace',
-				version: '1.1.5',
-				author: 'Jackie Chui',
-				description:
-					'Find and replace texts and layer names easily. Accessible via the toolbar button or keyboard shortcut (Ctrl/Cmd + F).'
-			}
-		],
+		plugins: [],
 		installedPlugins: []
 	}),
 	watch: {
@@ -92,9 +41,17 @@ export default {
 		}
 	},
 	mounted() {
+		var self = this;
 		if (JSON.parse(localStorage.getItem('installedPlugins')) !== null) {
 			this.installedPlugins = JSON.parse(localStorage.getItem('installedPlugins'));
 		} else localStorage.setItem('installedPlugins', JSON.stringify([]));
+		const request = new XMLHttpRequest();
+		request.addEventListener('load', function() {
+			self.plugins = this.responseText;
+			console.log(self.plugins);
+		});
+		request.open('GET', 'https://jachui.github.io/figma-plugin-manager/masterList.json');
+		request.send();
 	},
 	computed: {
 		searchedPlugins() {
