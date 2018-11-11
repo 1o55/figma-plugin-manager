@@ -47,14 +47,23 @@ export function startMutationObserver() {
 				mutation.addedNodes[0].attributes.name &&
 				mutation.addedNodes[0].attributes.name.value === 'layerMenu' &&
 				document.querySelectorAll('div[name="layerMenu"]').length === 2 &&
-				window.App._state.dropdownShown.type === 'DROPDOWN_TYPE_SELECTION_CONTEXT_MENU' &&
 				[
 					...[...document.querySelectorAll('div[class*="multilevel_dropdown--name"]')].find(
 						node => node.innerText === 'More'
 					).parentNode.classList
 				].some(className => className.includes('dropdown--optionActive'))
 			) {
-				window.dispatchEvent(new CustomEvent('moreMenuOpened'));
+				window.dispatchEvent(
+					new CustomEvent('moreMenuOpened', {
+						detail: {
+							menu: window.App._state.dropdownShown,
+							hasMoreOptions:
+								[...document.querySelectorAll('div[class*="multilevel_dropdown--name"]')].find(
+									node => node.innerText === 'More'
+								) !== undefined
+						}
+					})
+				);
 			}
 		});
 	}).observe(document.getElementById('react-page'), { childList: true, subtree: true });

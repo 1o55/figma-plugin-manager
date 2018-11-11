@@ -57,14 +57,16 @@ export default {
 				name: 'PDF Export',
 				version: '1.2.1',
 				author: 'Jackie Chui',
-				description: "Export a PDF file containing all the frames in the current page. A new PDF option will be added to Figma's export picker."
+				description:
+					"Export a PDF file containing all the frames in the current page. A new PDF option will be added to Figma's export picker."
 			},
 			{
 				id: 'layer-distributor',
 				name: 'Layer Distributor',
 				version: '1.2.3',
 				author: 'Jackie Chui',
-				description: 'Distribute layers with consistent spacing. Accessible via the alignment tools or keyboard shortcut (Ctrl/Cmd + Shift + D).'
+				description:
+					'Distribute layers with consistent spacing. Accessible via the alignment tools or keyboard shortcut (Ctrl/Cmd + Shift + D).'
 			},
 			{
 				id: 'batch-rename',
@@ -78,7 +80,8 @@ export default {
 				name: 'Find and Replace',
 				version: '1.1.5',
 				author: 'Jackie Chui',
-				description: 'Find and replace texts and layer names easily. Accessible via the toolbar button or keyboard shortcut (Ctrl/Cmd + F).'
+				description:
+					'Find and replace texts and layer names easily. Accessible via the toolbar button or keyboard shortcut (Ctrl/Cmd + F).'
 			}
 		],
 		installedPlugins: []
@@ -146,6 +149,16 @@ export default {
 
 <style lang="scss">
 @import './css/plugin-modal';
+
+.plugin-context-menu-item {
+	font-size: 11px;
+	line-height: 24px;
+	padding: 0px 12px;
+	color: #fff;
+	&:hover {
+		background: #30c2ff;
+	}
+}
 
 #pluginManager {
 	user-select: none;
