@@ -1,3 +1,4 @@
+import { startMutationObserver } from './mutationObserver';
 import Vue from 'vue';
 import App from './App.vue';
 import VModal from 'vue-js-modal';
@@ -55,40 +56,4 @@ if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null)
 	window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
 }
 
-if (!window.__figmaDesktop) {
-	let projectsPageLoaded = false;
-	let fileLoaded = false;
-	let menuOpened = false;
-	new MutationObserver(mutations => {
-		mutations.forEach(mutation => {
-			if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !projectsPageLoaded) {
-				projectsPageLoaded = true;
-				window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
-			}
-			if (document.querySelector('[data-tooltip-text="Show notifications"]') === null && projectsPageLoaded) {
-				projectsPageLoaded = false;
-				window.dispatchEvent(new CustomEvent('projectsPageUnloaded'));
-			}
-			if (mutation.addedNodes[0] === document.querySelector('div[class*="top_bar--header--"]')) {
-				window.dispatchEvent(new CustomEvent('projectsPageChanged'));
-			}
-			if (window.App._fullscreenIsReady && window.App._state.selectedView.fullscreen && !fileLoaded) {
-				console.log('send fileLoaded event');
-				fileLoaded = true;
-				window.dispatchEvent(new CustomEvent('fileLoaded'));
-			}
-			if (!window.App._state.selectedView.fullscreen && fileLoaded) {
-				fileLoaded = false;
-				window.dispatchEvent(new CustomEvent('fileUnloaded'));
-			}
-			if (window.App._state.dropdownShown !== null && !menuOpened) {
-				menuOpened = true;
-				window.dispatchEvent(new CustomEvent('menuOpened', { detail: window.App._state.dropdownShown }));
-			}
-			if (!window.App._state.dropdownShown && menuOpened) {
-				menuOpened = false;
-				window.dispatchEvent(new CustomEvent('menuClosed'));
-			}
-		});
-	}).observe(reactPage, { childList: true, subtree: true });
-}
+if (!window.__figmaDesktop) startMutationObserver();
