@@ -46,19 +46,6 @@ export default {
 		if (JSON.parse(localStorage.getItem('installedPlugins')) !== null) {
 			this.installedPlugins = JSON.parse(localStorage.getItem('installedPlugins'));
 		} else localStorage.setItem('installedPlugins', JSON.stringify([]));
-		// const request = new XMLHttpRequest();
-		// request.addEventListener('load', function() {
-		// 	JSON.parse(this.responseText).forEach(pluginEntry => {
-		// 		const pluginRequest = new XMLHttpRequest();
-		// 		pluginRequest.addEventListener('load', function() {
-		// 			self.plugins.push(JSON.parse(this.responseText));
-		// 		});
-		// 		pluginRequest.open('GET', pluginEntry.manifest);
-		// 		pluginRequest.send();
-		// 	});
-		// });
-		// request.open('GET', 'https://jachui.github.io/figma-plugin-manager/masterList.json');
-		// request.send();
 		masterList.forEach(pluginEntry => {
 			const pluginRequest = new XMLHttpRequest();
 			pluginRequest.addEventListener('load', function() {
