@@ -1,4 +1,44 @@
 export const FigmaPluginAPI = {
+	onFileBrowserLoaded: triggerFunction => {
+		window.addEventListener('fileBrowserLoaded', () => {
+			triggerFunction();
+		});
+	},
+	onFileBrowserChanged: triggerFunction => {
+		window.addEventListener('fileBrowserChanged', () => {
+			triggerFunction();
+		});
+	},
+	onFileBrowserUnloaded: triggerFunction => {
+		window.addEventListener('fileBrowserUnloaded', () => {
+			triggerFunction();
+		});
+	},
+	onFileLoaded: triggerFunction => {
+		window.addEventListener('fileLoaded', () => {
+			triggerFunction();
+		});
+	},
+	onFileUnloaded: triggerFunction => {
+		window.addEventListener('fileUnloaded', () => {
+			triggerFunction();
+		});
+	},
+	onMenuOpened: triggerFunction => {
+		window.addEventListener('menuOpened', event => {
+			triggerFunction(event.detail.menu, event.detail.hasMoreOptions);
+		});
+	},
+	onMoreMenuOpened: triggerFunction => {
+		window.addEventListener('moreMenuOpened', event => {
+			triggerFunction(event.detail.menu, event.detail.hasMoreOptions);
+		});
+	},
+	onMenuClosed: triggerFunction => {
+		window.addEventListener('menuClosed', () => {
+			triggerFunction();
+		});
+	},
 	createContextMenuButton: {
 		Selection: (id, buttonLabel, triggerFunction) => {
 			createContextMenuButton('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', id, buttonLabel, triggerFunction);
@@ -10,16 +50,16 @@ export const FigmaPluginAPI = {
 };
 
 const createContextMenuButton = (menuType, id, buttonLabel, triggerFunction) => {
-	window.addEventListener('menuOpened', event => {
-		if (event.detail.menu.type === menuType) {
-			if (!event.detail.hasMoreOptions) {
+	FigmaPluginAPI.onMenuOpened((data, hasMoreOptions) => {
+		if (data.type === menuType) {
+			if (!hasMoreOptions) {
 				const menu = document.querySelector('div[class*="dropdown--dropdown--35dH4"]');
 				const newButton = document.createElement('div');
 				newButton.className = 'plugin-context-menu-item';
 				newButton.id = id;
 				newButton.innerText = buttonLabel;
 				newButton.onclick = () => {
-					triggerFunction.call();
+					triggerFunction();
 					window.App._dispatch({ type: 'HIDE_DROPDOWN' });
 				};
 				menu.appendChild(newButton);
@@ -38,16 +78,16 @@ const createContextMenuButton = (menuType, id, buttonLabel, triggerFunction) => 
 			}
 		}
 	});
-	window.addEventListener('moreMenuOpened', event => {
-		if (event.detail.menu.type === menuType) {
-			if (event.detail.hasMoreOptions) {
+	FigmaPluginAPI.onMoreMenuOpened((data, hasMoreOptions) => {
+		if (data.type === menuType) {
+			if (hasMoreOptions) {
 				const menu = document.querySelector('div[class*="multilevel_dropdown--menu"]');
 				const newButton = document.createElement('div');
 				newButton.className = 'plugin-context-menu-item';
 				newButton.id = id;
 				newButton.innerText = buttonLabel;
 				newButton.onclick = () => {
-					triggerFunction.call();
+					triggerFunction();
 					window.App._dispatch({ type: 'HIDE_DROPDOWN' });
 				};
 				const numberOfSeparators = [...menu.children].filter(node => node.className.includes('dropdown--separator'))

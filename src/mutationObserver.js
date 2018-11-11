@@ -1,19 +1,19 @@
 export function startMutationObserver() {
-	let projectsPageLoaded = false;
+	let fileBrowserLoaded = false;
 	let fileLoaded = false;
 	let menuOpened = false;
 	new MutationObserver(mutations => {
 		mutations.forEach(mutation => {
-			if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !projectsPageLoaded) {
-				projectsPageLoaded = true;
-				window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
+			if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null && !fileBrowserLoaded) {
+				fileBrowserLoaded = true;
+				window.dispatchEvent(new CustomEvent('fileBrowserLoaded'));
 			}
-			if (document.querySelector('[data-tooltip-text="Show notifications"]') === null && projectsPageLoaded) {
-				projectsPageLoaded = false;
-				window.dispatchEvent(new CustomEvent('projectsPageUnloaded'));
+			if (document.querySelector('[data-tooltip-text="Show notifications"]') === null && fileBrowserLoaded) {
+				fileBrowserLoaded = false;
+				window.dispatchEvent(new CustomEvent('fileBrowserUnloaded'));
 			}
 			if (mutation.addedNodes[0] === document.querySelector('div[class*="top_bar--header--"]')) {
-				window.dispatchEvent(new CustomEvent('projectsPageChanged'));
+				window.dispatchEvent(new CustomEvent('fileBrowserChanged'));
 			}
 			if (window.App._fullscreenIsReady && window.App._state.selectedView.fullscreen && !fileLoaded) {
 				fileLoaded = true;

@@ -26,21 +26,21 @@ const injectManagerButton = () => {
 	managerButton.onclick = vue.$children[0].toggleModal;
 };
 
-window.addEventListener('projectsPageLoaded', () => {
+FigmaPluginAPI.onFileBrowserLoaded(() => {
 	if (document.querySelector('#managerButton') === null) injectManagerButton();
 });
 
-window.addEventListener('projectsPageChanged', () => {
-	window.pluginManagerVue.$children[0].hide();
+FigmaPluginAPI.onFileBrowserChanged(() => {
+	vue.$children[0].hide();
 	if (document.querySelector('#managerButton') === null) injectManagerButton();
 });
 
-window.addEventListener('projectsPageUnloaded', () => {
-	window.pluginManagerVue.$children[0].hide();
+FigmaPluginAPI.onFileBrowserUnloaded(() => {
+	vue.$children[0].hide();
 });
 
 if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null) {
-	window.dispatchEvent(new CustomEvent('projectsPageLoaded'));
+	if (document.querySelector('#managerButton') === null) injectManagerButton();
 }
 
 if (!window.__figmaDesktop) startMutationObserver();
