@@ -51,7 +51,7 @@ export default {
 			pluginRequest.addEventListener('load', function() {
 				self.plugins.push(JSON.parse(this.responseText));
 			});
-			pluginRequest.open('GET', pluginEntry.manifest);
+			pluginRequest.open('GET', pluginEntry.manifest + '?_=' + new Date().getTime());
 			pluginRequest.send();
 		});
 	},
