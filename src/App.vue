@@ -97,10 +97,40 @@ export default {
 		},
 		install(plugin) {
 			this.installedPlugins.push(plugin);
+			window.App._dispatch({
+				type: 'VISUAL_BELL_ENQUEUE',
+				payload: {
+					type: 'installed_plugin',
+					message: window.__figmaDesktop
+						? 'Plugin installed. Refresh your tabs to see changes.'
+						: 'Plugin installed. Refresh this page to see changes.',
+					button: {
+						text: 'Refresh',
+						action: () => {
+							location.reload();
+						}
+					}
+				}
+			});
 		},
 		uninstall(plugin) {
 			this.installedPlugins = this.installedPlugins.filter(installedPlugin => installedPlugin.id !== plugin.id);
 			this.detailScreenOn = false;
+			window.App._dispatch({
+				type: 'VISUAL_BELL_ENQUEUE',
+				payload: {
+					type: 'uninstalled_plugin',
+					message: window.__figmaDesktop
+						? 'Plugin uninstalled. Refresh your tabs to see changes.'
+						: 'Plugin uninstalled. Refresh this page to see changes.',
+					button: {
+						text: 'Refresh',
+						action: () => {
+							location.reload();
+						}
+					}
+				}
+			});
 		}
 	}
 };
