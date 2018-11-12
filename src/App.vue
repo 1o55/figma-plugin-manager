@@ -5,17 +5,17 @@
 				.modal-tabs
 					.modal-tab(:class='{"active-tab": !installedScreenOn}' @click='installedScreenOn = false, detailScreenOn = false, searchText = ""') Plugins
 					.modal-tab(:class='{"active-tab": installedScreenOn}' @click='installedScreenOn = true, detailScreenOn = false, searchText = ""') Installed
-				.modal-close-button(ref='closeButton' @click='hide')
+				.figma-icon.close.modal-close-button(ref='closeButton' @click='hide')
 			.modal-content
 				.list-screen(v-if='!installedScreenOn || (installedScreenOn && installedPlugins.length > 0)' :class='{detailScreenOn: detailScreenOn}')
 					.search-box
-						.search-icon ō
+						.figma-icon.search
 						input(v-model='searchText' placeholder='Search' spellcheck='false')
-					.plugins-list-scroll-container
-						.empty-message(v-if='searchedPlugins.length === 0 && searchText !== ""') No results for '{{ searchText }}'
+					.plugins-list
 						pluginItem(type='text' v-for='plugin in searchedPlugins' :key='plugin.id' :plugin='plugin' :installed='installedPlugins.find(installedPlugin => installedPlugin.id === plugin.id) !== undefined' :installedScreenOn='installedScreenOn' @goToDetail='goToDetail' @install='install')
+						.no-search-results-message(v-if='searchedPlugins.length === 0 && searchText !== ""') No results for '{{ searchText }}'
 				detailScreen(:class='{detailScreenOn: detailScreenOn}' :plugin='selectedPlugin' :installed='installedPlugins.find(installedPlugin => installedPlugin.id === selectedPlugin.id) !== undefined' @backToList='detailScreenOn = false' @install='install' @uninstall='uninstall')
-				.no-installed-message(v-if='installedScreenOn && installedPlugins.length === 0') No plugins installed
+				.empty-state(v-if='installedScreenOn && installedPlugins.length === 0') No plugins installed
 </template>
 
 <script>
@@ -79,14 +79,14 @@ export default {
 			this.$modal.hide('pluginManagerModal');
 		},
 		openModal() {
-			document.querySelector('#managerButton').style.backgroundColor = '#30c2ff';
-			this.detailScreenOn = false;
 			this.modalOpened = true;
+			document.querySelector('#pluginManagerButton').classList.add('active');
 		},
 		modalClosed() {
+			this.installedScreenOn = false;
 			this.modalOpened = false;
 			this.detailScreenOn = false;
-			document.querySelector('#managerButton').style.backgroundColor = '';
+			document.querySelector('#pluginManagerButton').classList.remove('active');
 		},
 		toggleModal() {
 			this.modalOpened ? this.hide() : this.show();
@@ -109,7 +109,8 @@ export default {
 						action: () => {
 							location.reload();
 						}
-					}
+					},
+					timeout: 7e3
 				}
 			});
 		},
@@ -128,7 +129,8 @@ export default {
 						action: () => {
 							location.reload();
 						}
-					}
+					},
+					timeout: 7e3
 				}
 			});
 		}
@@ -137,7 +139,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import './css/plugin-modal';
+@import './css/FigmaPluginUI';
 
 .plugin-context-menu-item {
 	font-size: 11px;
@@ -149,21 +151,6 @@ export default {
 	}
 }
 
-#pluginManager {
-	user-select: none;
-	cursor: default;
-}
-
-#managerButton {
-	width: 42px;
-	svg {
-		padding: 12px;
-	}
-	&:hover {
-		background-color: #050505;
-	}
-}
-
 .list-screen {
 	transition: transform 0.2s ease;
 	transform: translateX(0px);
@@ -172,56 +159,16 @@ export default {
 	}
 }
 
-.search-box {
-	position: relative;
-	height: 48px;
-	border-bottom: 1px solid #d4d4d4;
-	.search-icon {
-		font-family: 'FigmaIcons';
-		font-size: 12px;
-		height: 12px;
-		width: 12px;
-		position: absolute;
-		top: 17px;
-		left: 24px;
-		color: #444;
-	}
-	input {
-		background: none;
-		height: 32px;
-		padding: 8px 46px;
-		width: 368px;
-		&::placeholder {
-			color: #aaa;
-		}
-	}
-}
-
-.plugins-list-scroll-container {
+.plugins-list {
 	height: 546px;
 	max-height: -webkit-calc(70vh - 48px);
 	max-height: calc(70vh - 48px);
 	overflow-y: auto;
 }
 
-.empty-message {
-	color: #aaa;
-	padding: 24px 24px 0;
-}
-
-.no-installed-message {
-	font-size: 14px;
+.modal-content > .empty-state {
 	width: 460px;
 	height: 595px;
 	max-height: 70vh;
-	display: flex;
-	-webkit-box-orient: vertical;
-	-webkit-box-direction: normal;
-	flex-direction: column;
-	text-align: center;
-	-webkit-box-pack: center;
-	-webkit-justify-content: center;
-	-ms-flex-pack: center;
-	justify-content: center;
 }
 </style>

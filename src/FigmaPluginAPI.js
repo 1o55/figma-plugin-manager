@@ -46,6 +46,20 @@ export const FigmaPluginAPI = {
 		Canvas: (id, buttonLabel, triggerFunction) => {
 			createContextMenuButton('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', id, buttonLabel, triggerFunction);
 		}
+	},
+	addTooltip: (element, tooltipText, showAfterDelay) => {
+		element.addEventListener('mousemove', () => {
+			window.App._dispatch({
+				type: showAfterDelay ? 'TOOLTIP_SHOW_AFTER_DELAY' : 'TOOLTIP_SHOW_IMMEDIATELY',
+				payload: {
+					interactive: false,
+					position: 0,
+					target: { kind: 2, text: tooltipText },
+					targetRect: element.getBoundingClientRect(),
+					timeoutDelay: 500
+				}
+			});
+		});
 	}
 };
 

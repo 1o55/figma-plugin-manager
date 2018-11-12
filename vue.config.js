@@ -10,17 +10,6 @@ module.exports = {
 		config.plugins.delete('prefetch');
 	},
 	configureWebpack: {
-		// optimization: {
-		// 	splitChunks: {
-		// 		cacheGroups: {
-		// 			commons: {
-		// 				test: /[\\/]node_modules[\\/]/,
-		// 				name: 'pluginManagers',
-		// 				chunks: 'all'
-		// 			}
-		// 		}
-		// 	}
-		// },
 		output: {
 			jsonpFunction: 'pluginManager'
 		},
