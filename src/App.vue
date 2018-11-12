@@ -109,7 +109,7 @@ export default {
 			};
 			window.__figmaDesktop
 				? null
-				: Object.assign(toast, {
+				: Object.assign(toast.payload, {
 						button: {
 							text: 'Refresh',
 							action: () => {
@@ -134,7 +134,7 @@ export default {
 			};
 			window.__figmaDesktop
 				? null
-				: Object.assign(toast, {
+				: Object.assign(toast.payload, {
 						button: {
 							text: 'Refresh',
 							action: () => {
