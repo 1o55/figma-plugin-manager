@@ -170,7 +170,7 @@ export default {
 		border-radius: 4px;
 		background: #aaa;
 		&.active {
-			background: #444;
+			background-color: #444;
 		}
 	}
 	.v-carousel-nav {

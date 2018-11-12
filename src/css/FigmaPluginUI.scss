@@ -1,6 +1,7 @@
 @import './FigmaIcons';
 
 * {
+	-webkit-font-smoothing: antialiased;
 	user-select: none;
 	cursor: default;
 }
@@ -52,6 +53,8 @@ button.button {
 .v--modal-overlay {
 	height: 0 !important;
 	width: 0 !important;
+	position: relative !important;
+	z-index: 0 !important;
 }
 
 .overlay-fade-enter-active,
@@ -70,6 +73,7 @@ button.button {
 	font: normal normal 400 12px/18px Roboto, sans-serif;
 	height: 36px;
 	background: #2c2c2c;
+	color: #fff;
 	display: flex;
 	-webkit-box-pack: justify;
 	-webkit-justify-content: space-between;
@@ -81,12 +85,18 @@ button.button {
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 	.modal-close-button {
+		font-family: 'FigmaIcons';
 		color: #fff;
 		height: 36px;
 		width: 36px;
-		position: absolute;
-		right: 0;
 		opacity: 0.3;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		&::after {
+			content: '\103';
+			font-size: 10px;
+		}
 		&:hover {
 			opacity: 1;
 		}
@@ -97,11 +107,6 @@ button.button {
 		.modal-close-button {
 			height: 48px;
 			width: 48px;
-		}
-		.modal-header-title {
-			font-size: 14px;
-			line-height: 20px;
-			padding: 0 12px;
 		}
 	}
 }
@@ -124,7 +129,6 @@ button.button {
 .modal-header-title {
 	font-size: 12px;
 	letter-spacing: 0.2px;
-	-webkit-font-smoothing: antialiased;
 	line-height: 36px;
 	position: absolute;
 	top: 50%;

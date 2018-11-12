@@ -5,7 +5,7 @@
 				.modal-tabs
 					.modal-tab(:class='{"active-tab": !installedScreenOn}' @click='installedScreenOn = false, detailScreenOn = false, searchText = ""') Plugins
 					.modal-tab(:class='{"active-tab": installedScreenOn}' @click='installedScreenOn = true, detailScreenOn = false, searchText = ""') Installed
-				.figma-icon.close.modal-close-button(ref='closeButton' @click='hide')
+				.modal-close-button(ref='closeButton' @click='hide')
 			.modal-content
 				.list-screen(v-if='!installedScreenOn || (installedScreenOn && installedPlugins.length > 0)' :class='{detailScreenOn: detailScreenOn}')
 					.search-box
