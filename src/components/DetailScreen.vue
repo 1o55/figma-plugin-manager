@@ -228,6 +228,9 @@ export default {
 	color: #aaaaaa;
 	margin-top: 8px;
 	margin-bottom: 16px;
+	.version-number {
+		color: #444;
+	}
 	.date {
 		position: absolute;
 		top: 0;
