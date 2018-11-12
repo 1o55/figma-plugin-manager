@@ -15,26 +15,26 @@ const vue = new Vue({
 	render: h => h(App)
 });
 
-const injectManagerButton = () => {
+const injectpluginManagerButton = () => {
 	const notificationButton = document.querySelector('[data-tooltip-text="Show notifications"]');
 	notificationButton.parentElement.style.display = 'flex';
-	const managerButton = document.createElement('div');
-	managerButton.id = 'pluginManagerButton';
-	managerButton.className = 'top-bar-button';
-	managerButton.innerHTML =
+	const pluginManagerButton = document.createElement('div');
+	pluginManagerButton.id = 'pluginpluginManagerButton';
+	pluginManagerButton.className = 'top-bar-button';
+	pluginManagerButton.innerHTML =
 		'<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 1H19V10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1ZM0 10C0 4.47715 4.47715 0 10 0H19H20V1V10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10ZM9.5 9.5V6H10.5V9.5H14V10.5H10.5V14H9.5V10.5H6V9.5H9.5Z" fill="white"/></svg>';
-	notificationButton.parentNode.insertBefore(managerButton, notificationButton);
-	managerButton.onclick = vue.$children[0].toggleModal;
-	FigmaPluginAPI.addTooltip(managerButton, 'Plugin Manager', true);
+	notificationButton.parentNode.insertBefore(pluginManagerButton, notificationButton);
+	pluginManagerButton.onclick = vue.$children[0].toggleModal;
+	FigmaPluginAPI.addTooltip(pluginManagerButton, 'Plugin Manager', true);
 };
 
 FigmaPluginAPI.onFileBrowserLoaded(() => {
-	if (document.querySelector('#managerButton') === null) injectManagerButton();
+	if (document.querySelector('#pluginManagerButton') === null) injectpluginManagerButton();
 });
 
 FigmaPluginAPI.onFileBrowserChanged(() => {
 	vue.$children[0].hide();
-	if (document.querySelector('#managerButton') === null) injectManagerButton();
+	if (document.querySelector('#pluginManagerButton') === null) injectpluginManagerButton();
 });
 
 FigmaPluginAPI.onFileBrowserUnloaded(() => {
@@ -42,7 +42,7 @@ FigmaPluginAPI.onFileBrowserUnloaded(() => {
 });
 
 if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null) {
-	if (document.querySelector('#managerButton') === null) injectManagerButton();
+	if (document.querySelector('#pluginManagerButton') === null) injectpluginManagerButton();
 }
 
 if (!window.__figmaDesktop) startMutationObserver();
