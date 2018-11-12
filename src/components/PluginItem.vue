@@ -1,11 +1,10 @@
 <template lang="pug">
 	.pluginItem(@click='goToDetail')
 		.name {{ plugin.name }}
-		//- .version {{ plugin.version }}
 		.author {{ plugin.author}}
 		.description {{ plugin.description }}
-		button(v-show='!installed && !installedScreenOn' @click.stop='install') Install
-		button(v-show='installed && !installedScreenOn' disabled='true') Installed
+		button.button(v-show='!installed && !installedScreenOn' @click.stop='install') Install
+		button.button(v-show='installed && !installedScreenOn' disabled='true') Installed
 		.chevron œ
 </template>
 

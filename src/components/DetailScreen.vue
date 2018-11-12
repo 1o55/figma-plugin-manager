@@ -5,8 +5,8 @@
 			.title
 				.name {{ plugin.name }}
 				.author {{ plugin.author}}
-			button.primary(v-show='!installed' @click.stop='install') Install
-			button(v-show='installed' @click.stop='uninstall') Uninstall
+			button.button.primary(v-show='!installed' @click.stop='install') Install
+			button.button(v-show='installed' @click.stop='uninstall') Uninstall
 		.content
 			.section.image-section(v-if='plugin.images && plugin.images.length > 0' :class='{singleImage: plugin.images.length === 1}')
 					carousel(ref='carousel' :watch-items='plugin.images' prev-html='Ŕ' next-html='ŕ' loop)
