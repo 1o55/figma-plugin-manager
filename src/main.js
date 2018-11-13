@@ -41,10 +41,6 @@ FigmaPluginAPI.onFileBrowserUnloaded(() => {
 	vue.$children[0].hide();
 });
 
-FigmaPluginAPI.onModalOpened(e => {
-	document.querySelector('div[class*="export_picker"]') !== null ? console.log(e) : null;
-});
-
 if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null) {
 	if (document.querySelector('#pluginManagerButton') === null) injectpluginManagerButton();
 }

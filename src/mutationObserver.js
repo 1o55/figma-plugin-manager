@@ -26,6 +26,7 @@ export function startMutationObserver() {
 			if (
 				mutation.addedNodes[0] &&
 				mutation.addedNodes[0].className &&
+				typeof mutation.addedNodes[0].className === 'string' &&
 				mutation.addedNodes[0].className.includes('modal--')
 			) {
 				window.dispatchEvent(
@@ -37,6 +38,7 @@ export function startMutationObserver() {
 			if (
 				mutation.removedNodes[0] &&
 				mutation.removedNodes[0].className &&
+				typeof mutation.removedNodes[0].className === 'string' &&
 				mutation.removedNodes[0].className.includes('modal--')
 			) {
 				window.dispatchEvent(new CustomEvent('modalClosed'));
