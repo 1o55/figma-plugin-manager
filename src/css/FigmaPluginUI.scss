@@ -42,7 +42,8 @@ button.button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	&.active {
+	&.active,
+	&.active:hover {
 		background: #30c2ff;
 	}
 	&:hover {

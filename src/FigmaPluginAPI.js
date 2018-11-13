@@ -24,6 +24,16 @@ export const FigmaPluginAPI = {
 			triggerFunction();
 		});
 	},
+	onModalOpened: triggerFunction => {
+		window.addEventListener('modalOpened', event => {
+			triggerFunction(event.detail);
+		});
+	},
+	onModalClosed: triggerFunction => {
+		window.addEventListener('modalClosed', () => {
+			triggerFunction();
+		});
+	},
 	onMenuOpened: triggerFunction => {
 		window.addEventListener('menuOpened', event => {
 			triggerFunction(event.detail.menu, event.detail.hasMoreOptions);
@@ -59,6 +69,12 @@ export const FigmaPluginAPI = {
 					timeoutDelay: 500
 				}
 			});
+		});
+		element.addEventListener('click', () => {
+			if (window.App._state.tooltip.state === 1)
+				window.App._dispatch({
+					type: 'TOOLTIP_HIDE'
+				});
 		});
 	}
 };

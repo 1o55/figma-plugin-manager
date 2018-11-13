@@ -23,6 +23,24 @@ export function startMutationObserver() {
 				fileLoaded = false;
 				window.dispatchEvent(new CustomEvent('fileUnloaded'));
 			}
+			if (
+				mutation.addedNodes[0] &&
+				mutation.addedNodes[0].className &&
+				mutation.addedNodes[0].className.includes('modal--')
+			) {
+				window.dispatchEvent(
+					new CustomEvent('modalOpened', {
+						detail: document.querySelector('div[class*="modal--header"]').innerText
+					})
+				);
+			}
+			if (
+				mutation.removedNodes[0] &&
+				mutation.removedNodes[0].className &&
+				mutation.removedNodes[0].className.includes('modal--')
+			) {
+				window.dispatchEvent(new CustomEvent('modalClosed'));
+			}
 			if (window.App._state.dropdownShown !== null && !menuOpened) {
 				menuOpened = true;
 				window.dispatchEvent(

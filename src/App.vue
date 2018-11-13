@@ -21,13 +21,14 @@
 <script>
 import PluginItem from './components/PluginItem';
 import DetailScreen from './components/DetailScreen';
-const masterList = require('../masterList.json');
+let masterList = require('../masterList.json');
 export default {
 	components: {
 		PluginItem,
 		DetailScreen
 	},
 	data: () => ({
+		orgId: '',
 		modalOpened: false,
 		searchText: '',
 		selectedPlugin: {},
@@ -46,6 +47,7 @@ export default {
 		if (JSON.parse(localStorage.getItem('installedPlugins')) !== null) {
 			this.installedPlugins = JSON.parse(localStorage.getItem('installedPlugins'));
 		} else localStorage.setItem('installedPlugins', JSON.stringify([]));
+		const userEmail = JSON.parse(localStorage.getItem('ajs_user_traits')).email;
 		masterList.forEach(pluginEntry => {
 			const pluginRequest = new XMLHttpRequest();
 			pluginRequest.addEventListener('load', function() {
@@ -57,12 +59,18 @@ export default {
 	},
 	computed: {
 		searchedPlugins() {
+			const availablePlugins =
+				this.orgId === ''
+					? this.plugins.filter(plugin => !plugin.requiredOrgId || plugin.requiredOrgId === '')
+					: this.plugins.filter(
+							plugin => !plugin.requiredOrgId || plugin.requiredOrgId === '' || plugin.requiredOrgId === this.orgId
+					  );
 			if (!this.installedScreenOn) {
-				return this.plugins.filter(plugin => {
+				return availablePlugins.filter(plugin => {
 					return plugin.name.toLowerCase().match(this.searchText.toLowerCase());
 				});
 			} else {
-				const installedPlugins = this.plugins.filter(plugin => {
+				const installedPlugins = availablePlugins.filter(plugin => {
 					return this.installedPlugins.find(installedPlugin => installedPlugin.id === plugin.id);
 				});
 				return installedPlugins.filter(plugin => {
@@ -73,6 +81,8 @@ export default {
 	},
 	methods: {
 		show() {
+			const currentOrgId = window.App._state.currentOrgId;
+			if (this.orgId === '' && currentOrgId !== null) this.orgId = currentOrgId;
 			this.$modal.show('pluginManagerModal');
 		},
 		hide() {
