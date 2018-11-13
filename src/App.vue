@@ -47,10 +47,10 @@ export default {
 		if (JSON.parse(localStorage.getItem('installedPlugins')) !== null) {
 			this.installedPlugins = JSON.parse(localStorage.getItem('installedPlugins'));
 		} else localStorage.setItem('installedPlugins', JSON.stringify([]));
-		const userEmail = JSON.parse(localStorage.getItem('ajs_user_traits')).email;
 		masterList.forEach(pluginEntry => {
 			const pluginRequest = new XMLHttpRequest();
 			pluginRequest.addEventListener('load', function() {
+				console.log(JSON.parse(this.responseText));
 				self.plugins.push(JSON.parse(this.responseText));
 			});
 			pluginRequest.open('GET', pluginEntry.manifest + '?_=' + new Date().getTime());
