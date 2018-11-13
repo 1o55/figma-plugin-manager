@@ -50,8 +50,9 @@ export default {
 		masterList.forEach(pluginEntry => {
 			const pluginRequest = new XMLHttpRequest();
 			pluginRequest.addEventListener('load', function() {
-				console.log(JSON.parse(this.responseText));
-				self.plugins.push(JSON.parse(this.responseText));
+				const plugin = JSON.parse(this.responseText);
+				plugin.publishDate = pluginRequest.publishDate;
+				self.plugins.push(plugin);
 			});
 			pluginRequest.open('GET', pluginEntry.manifest + '?_=' + new Date().getTime());
 			pluginRequest.send();
@@ -66,16 +67,20 @@ export default {
 							plugin => !plugin.requiredOrgId || plugin.requiredOrgId === '' || plugin.requiredOrgId === this.orgId
 					  );
 			if (!this.installedScreenOn) {
-				return availablePlugins.filter(plugin => {
-					return plugin.name.toLowerCase().match(this.searchText.toLowerCase());
-				});
+				return availablePlugins
+					.filter(plugin => {
+						return plugin.name.toLowerCase().match(this.searchText.toLowerCase());
+					})
+					.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
 			} else {
 				const installedPlugins = availablePlugins.filter(plugin => {
 					return this.installedPlugins.find(installedPlugin => installedPlugin.id === plugin.id);
 				});
-				return installedPlugins.filter(plugin => {
-					return plugin.name.toLowerCase().match(this.searchText.toLowerCase());
-				});
+				return installedPlugins
+					.filter(plugin => {
+						return plugin.name.toLowerCase().match(this.searchText.toLowerCase());
+					})
+					.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
 			}
 		}
 	},
