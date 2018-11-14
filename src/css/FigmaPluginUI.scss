@@ -62,6 +62,34 @@ button.button {
 	}
 }
 
+.plugin-dropdown-option {
+	font-size: 11px;
+	color: #fff;
+	padding: 0 6px;
+	align-items: center;
+	flex: 0 0 24px;
+	line-height: 24px;
+	text-align: left;
+	white-space: nowrap;
+	display: flex;
+	&:hover {
+		background: #30c2ff;
+	}
+	.plugin-dropdown-option-text {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		padding-left: 6px;
+		padding-right: 6px;
+		max-width: 200px;
+	}
+	.plugin-dropdown-option-shortcut {
+		margin-left: auto;
+		padding-left: 24px;
+		margin-right: 12px;
+	}
+}
+
 .v--modal-overlay {
 	height: 0 !important;
 	width: 0 !important;

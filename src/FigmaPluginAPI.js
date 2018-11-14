@@ -50,12 +50,26 @@ export const FigmaPluginAPI = {
 		});
 	},
 	createContextMenuButton: {
-		Selection: (id, buttonLabel, triggerFunction) => {
-			createContextMenuButton('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', id, buttonLabel, triggerFunction);
+		Selection: (id, buttonLabel, triggerFunction, shortcut) => {
+			createContextMenuButton('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
 		},
-		Canvas: (id, buttonLabel, triggerFunction) => {
-			createContextMenuButton('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', id, buttonLabel, triggerFunction);
+		Canvas: (id, buttonLabel, triggerFunction, shortcut) => {
+			createContextMenuButton('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
 		}
+	},
+	createKeyboardShortcut: (shortcut, triggerFunction) => {
+		document.querySelector('.focus-target').onkeydown = e => {
+			e.preventDefault();
+			if (
+				e.metaKey !== !shortcut.command &&
+				e.shiftKey !== !shortcut.shift &&
+				e.ctrlKey !== !shortcut.control &&
+				e.altKey !== !shortcut.option &&
+				e.key.toLowerCase() === shortcut.key.toLowerCase()
+			) {
+				triggerFunction();
+			}
+		};
 	},
 	addTooltip: (element, tooltipText, showAfterDelay) => {
 		element.addEventListener('mousemove', () => {
@@ -79,24 +93,38 @@ export const FigmaPluginAPI = {
 	}
 };
 
-const createContextMenuButton = (menuType, id, buttonLabel, triggerFunction) => {
+const createContextMenuButton = (menuType, id, buttonLabel, triggerFunction, shortcut) => {
 	FigmaPluginAPI.onMenuOpened((data, hasMoreOptions) => {
 		if (data.type === menuType) {
 			if (!hasMoreOptions) {
 				const menu = document.querySelector('div[class*="dropdown--dropdown--35dH4"]');
 				const newButton = document.createElement('div');
-				newButton.className = 'plugin-context-menu-item';
+				newButton.className = 'plugin-dropdown-option';
 				newButton.id = id;
-				newButton.innerText = buttonLabel;
+				const labelDiv = document.createElement('div');
+				labelDiv.className = 'plugin-dropdown-option-text';
+				labelDiv.innerText = buttonLabel;
+				newButton.appendChild(labelDiv);
+				if (shortcut) {
+					let shortcutText = '';
+					shortcutText += shortcut.control ? '⌃' : '';
+					shortcutText += shortcut.option ? '⌥' : '';
+					shortcutText += shortcut.shift ? '⇧' : '';
+					shortcutText += shortcut.command ? '⌘' : '';
+					shortcutText += shortcut.key ? shortcut.key.toUpperCase() : '';
+					if (shortcutText !== '') {
+						const shortcutDiv = document.createElement('div');
+						shortcutDiv.className = 'plugin-dropdown-option-shortcut';
+						shortcutDiv.innerText = shortcutText;
+						newButton.appendChild(shortcutDiv);
+					}
+				}
 				newButton.onclick = () => {
 					triggerFunction();
 					window.App._dispatch({ type: 'HIDE_DROPDOWN' });
 				};
 				menu.appendChild(newButton);
 				menu.style.top = `${parseInt(menu.style.top) - 24}px`;
-				if (menu.getBoundingClientRect().bottom + 8 > window.innerHeight) {
-					menu.style.top = `${window.innerHeight - menu.getBoundingClientRect().bottom - 2}px`;
-				}
 				newButton.onmouseover = () => {
 					const prevNode = newButton.previousSibling;
 					const activeClassName = [...prevNode.classList].find(className => className.includes('optionActive'));
@@ -113,9 +141,26 @@ const createContextMenuButton = (menuType, id, buttonLabel, triggerFunction) => 
 			if (hasMoreOptions) {
 				const menu = document.querySelector('div[class*="multilevel_dropdown--menu"]');
 				const newButton = document.createElement('div');
-				newButton.className = 'plugin-context-menu-item';
+				newButton.className = 'plugin-dropdown-option';
 				newButton.id = id;
-				newButton.innerText = buttonLabel;
+				const labelDiv = document.createElement('div');
+				labelDiv.className = 'plugin-dropdown-option-text';
+				labelDiv.innerText = buttonLabel;
+				newButton.appendChild(labelDiv);
+				if (shortcut) {
+					let shortcutText = '';
+					shortcutText += shortcut.control ? '⌃' : '';
+					shortcutText += shortcut.option ? '⌥' : '';
+					shortcutText += shortcut.shift ? '⇧' : '';
+					shortcutText += shortcut.command ? '⌘' : '';
+					shortcutText += shortcut.key ? shortcut.key.toUpperCase() : '';
+					if (shortcutText !== '') {
+						const shortcutDiv = document.createElement('div');
+						shortcutDiv.className = 'plugin-dropdown-option-shortcut';
+						shortcutDiv.innerText = shortcutText;
+						newButton.appendChild(shortcutDiv);
+					}
+				}
 				newButton.onclick = () => {
 					triggerFunction();
 					window.App._dispatch({ type: 'HIDE_DROPDOWN' });

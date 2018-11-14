@@ -93,7 +93,7 @@ export default {
 					? document.querySelector('#pluginManagerButton').classList.add('has-badge')
 					: document.querySelector('#pluginManagerButton').classList.remove('has-badge');
 			}
-			return numberOfUpdates
+			return numberOfUpdates;
 		}
 	},
 	methods: {
@@ -185,16 +185,6 @@ export default {
 
 <style lang="scss">
 @import './css/FigmaPluginUI';
-
-.plugin-context-menu-item {
-	font-size: 11px;
-	line-height: 24px;
-	padding: 0px 12px;
-	color: #fff;
-	&:hover {
-		background: #30c2ff;
-	}
-}
 
 .list-screen {
 	transition: transform 0.2s ease;
