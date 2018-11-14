@@ -5,6 +5,7 @@
 				.modal-tabs
 					.modal-tab(:class='{"active-tab": !installedScreenOn}' @click='installedScreenOn = false, detailScreenOn = false, searchText = ""') Plugins
 					.modal-tab(:class='{"active-tab": installedScreenOn}' @click='installedScreenOn = true, detailScreenOn = false, searchText = ""') Installed
+						.update-count(v-if='numberOfUpdates > 0') {{ numberOfUpdates }}
 				.modal-close-button(ref='closeButton' @click='hide')
 			.modal-content
 				.list-screen(v-if='!installedScreenOn || (installedScreenOn && installedPlugins.length > 0)' :class='{detailScreenOn: detailScreenOn}')
@@ -12,7 +13,7 @@
 						.figma-icon.search
 						input(v-model='searchText' placeholder='Search' spellcheck='false')
 					.plugins-list
-						pluginItem(type='text' v-for='plugin in searchedPlugins' :key='plugin.id' :plugin='plugin' :installed='installedPlugins.find(installedPlugin => installedPlugin.id === plugin.id) !== undefined' :installedScreenOn='installedScreenOn' @goToDetail='goToDetail' @install='install')
+						pluginItem(type='text' v-for='plugin in searchedPlugins' :key='plugin.id' :plugin='plugin' :installedPlugins='installedPlugins' :installedScreenOn='installedScreenOn' @goToDetail='goToDetail' @install='install')
 						.no-search-results-message(v-if='searchedPlugins.length === 0 && searchText !== ""') No results for '{{ searchText }}'
 				detailScreen(:class='{detailScreenOn: detailScreenOn}' :plugin='selectedPlugin' :installed='installedPlugins.find(installedPlugin => installedPlugin.id === selectedPlugin.id) !== undefined' @backToList='detailScreenOn = false' @install='install' @uninstall='uninstall')
 				.empty-state(v-if='installedScreenOn && installedPlugins.length === 0') No plugins installed
@@ -82,6 +83,17 @@ export default {
 					})
 					.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
 			}
+		},
+		numberOfUpdates() {
+			const numberOfUpdates = this.installedPlugins.filter(installedPlugin =>
+				this.plugins.find(plugin => plugin.id === installedPlugin.id && plugin.version !== installedPlugin.version)
+			).length;
+			if (document.querySelector('#pluginManagerButton') !== null) {
+				numberOfUpdates > 0
+					? document.querySelector('#pluginManagerButton').classList.add('has-badge')
+					: document.querySelector('#pluginManagerButton').classList.remove('has-badge');
+			}
+			return numberOfUpdates
 		}
 	},
 	methods: {
@@ -109,6 +121,13 @@ export default {
 		goToDetail(plugin) {
 			this.selectedPlugin = plugin;
 			document.querySelector('.detail-screen .content').scrollTop = 0;
+			if (this.installedScreenOn) {
+				const updatedInstalledPlugins = this.installedPlugins.map(installedPlugin => {
+					return installedPlugin.id === plugin.id ? plugin : installedPlugin;
+				});
+				this.installedPlugins = updatedInstalledPlugins;
+				localStorage.setItem('installedPlugins', JSON.stringify(updatedInstalledPlugins));
+			}
 			this.detailScreenOn = true;
 		},
 		install(plugin) {

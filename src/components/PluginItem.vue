@@ -3,20 +3,33 @@
 		.name {{ plugin.name }}
 		.author {{ plugin.author}}
 		.description {{ plugin.description }}
+		.whats-new-button(v-if='installedScreenOn && hasUpdate') See what's new in version {{plugin.version}}
+		.update-text(v-if='installedScreenOn && hasUpdate') Updated
 		button.button(v-show='!installed && !installedScreenOn' @click.stop='install') Install
 		button.button(v-show='installed && !installedScreenOn' disabled='true') Installed
 		.chevron œ
 </template>
 
 <script>
+var compareVersions = require('compare-versions');
+
 export default {
-	props: ['plugin', 'installed', 'installedScreenOn'],
+	props: ['plugin', 'installedPlugins', 'installed', 'installedScreenOn'],
 	methods: {
 		goToDetail(event) {
 			this.$emit('goToDetail', this.plugin);
 		},
 		install() {
 			this.$emit('install', this.plugin);
+		}
+	},
+	computed: {
+		installed() {
+			return this.installedPlugins.find(installedPlugin => installedPlugin.id === this.plugin.id) !== undefined;
+		},
+		hasUpdate() {
+			const thisPlugin = this.installedPlugins.find(installedPlugin => installedPlugin.id === this.plugin.id);
+			return thisPlugin !== undefined ? compareVersions(this.plugin.version, thisPlugin.version) : false;
 		}
 	}
 };
@@ -28,6 +41,12 @@ export default {
 	position: relative;
 	&:hover {
 		background: #f8f8f8;
+	}
+	.update-text {
+		color: #aaaaaa;
+		position: absolute;
+		top: 24px;
+		right: 48px;
 	}
 	.name {
 		display: inline-block;
@@ -50,6 +69,11 @@ export default {
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
+	}
+	.whats-new-button {
+		color: #30c2ff;
+		margin-top: 8px;
+		cursor: pointer;
 	}
 	button {
 		position: absolute;

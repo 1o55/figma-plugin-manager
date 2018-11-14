@@ -42,6 +42,17 @@ button.button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	position: relative;
+	&.has-badge::after {
+		content: '';
+		width: 12px;
+		height: 12px;
+		border-radius: 10px;
+		background: #f24822;
+		position: absolute;
+		top: 8px;
+		right: 6px;
+	}
 	&.active,
 	&.active:hover {
 		background: #30c2ff;
@@ -123,9 +134,25 @@ button.button {
 	color: #fff;
 	align-items: center;
 	opacity: 0.5;
+	display: flex;
 	&.active-tab {
 		opacity: 1;
 	}
+}
+
+.update-count {
+	height: 18px;
+	width: 18px;
+	line-height: 19px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
+	border: 1px solid #fff;
+	box-sizing: border-box;
+	border-radius: 100%;
+	margin-left: 6px;
+	font-size: 11px;
 }
 
 .modal-header-title {
