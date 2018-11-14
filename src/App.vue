@@ -108,6 +108,7 @@ export default {
 		},
 		goToDetail(plugin) {
 			this.selectedPlugin = plugin;
+			document.querySelector('.detail-screen .content').scrollTop = 0;
 			this.detailScreenOn = true;
 		},
 		install(plugin) {
