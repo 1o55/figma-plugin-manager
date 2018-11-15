@@ -16,6 +16,7 @@ export const FigmaPluginAPI = {
 	},
 	onFileLoaded: triggerFunction => {
 		window.addEventListener('fileLoaded', () => {
+			console.log(document.querySelector('.focus-target'));
 			triggerFunction();
 		});
 	},
@@ -36,12 +37,12 @@ export const FigmaPluginAPI = {
 	},
 	onMenuOpened: triggerFunction => {
 		window.addEventListener('menuOpened', event => {
-			triggerFunction(event.detail.menu, event.detail.hasMoreOptions);
+			triggerFunction(event.detail.type, event.detail.hasMoreOptions);
 		});
 	},
 	onMoreMenuOpened: triggerFunction => {
 		window.addEventListener('moreMenuOpened', event => {
-			triggerFunction(event.detail.menu, event.detail.hasMoreOptions);
+			triggerFunction(event.detail.type, event.detail.hasMoreOptions);
 		});
 	},
 	onMenuClosed: triggerFunction => {
@@ -94,8 +95,8 @@ export const FigmaPluginAPI = {
 };
 
 const createContextMenuButton = (menuType, id, buttonLabel, triggerFunction, shortcut) => {
-	FigmaPluginAPI.onMenuOpened((data, hasMoreOptions) => {
-		if (data.type === menuType) {
+	FigmaPluginAPI.onMenuOpened((type, hasMoreOptions) => {
+		if (type === menuType) {
 			if (!hasMoreOptions) {
 				const menu = document.querySelector('div[class*="dropdown--dropdown--35dH4"]');
 				const newButton = document.createElement('div');
@@ -136,8 +137,8 @@ const createContextMenuButton = (menuType, id, buttonLabel, triggerFunction, sho
 			}
 		}
 	});
-	FigmaPluginAPI.onMoreMenuOpened((data, hasMoreOptions) => {
-		if (data.type === menuType) {
+	FigmaPluginAPI.onMoreMenuOpened((type, hasMoreOptions) => {
+		if (type === menuType) {
 			if (hasMoreOptions) {
 				const menu = document.querySelector('div[class*="multilevel_dropdown--menu"]');
 				const newButton = document.createElement('div');

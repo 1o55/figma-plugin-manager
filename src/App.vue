@@ -113,7 +113,8 @@ export default {
 			this.installedScreenOn = false;
 			this.modalOpened = false;
 			this.detailScreenOn = false;
-			document.querySelector('#pluginManagerButton').classList.remove('active');
+			if (document.querySelector('#pluginManagerButton') !== null)
+				document.querySelector('#pluginManagerButton').classList.remove('active');
 		},
 		toggleModal() {
 			this.modalOpened ? this.hide() : this.show();
