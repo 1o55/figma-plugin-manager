@@ -16,7 +16,6 @@ export const FigmaPluginAPI = {
 	},
 	onFileLoaded: triggerFunction => {
 		window.addEventListener('fileLoaded', () => {
-			console.log(document.querySelector('.focus-target'));
 			triggerFunction();
 		});
 	},

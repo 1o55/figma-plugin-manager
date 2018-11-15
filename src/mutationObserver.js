@@ -8,33 +8,44 @@ export function startMutationObserver() {
 			fileBrowserLoaded = true;
 			window.dispatchEvent(new CustomEvent('fileBrowserLoaded'));
 		}
-		if (!document.getElementById('pluginManagerButton') && fileBrowserLoaded) {
+
+		if (
+			!document.getElementById('pluginManagerButton') &&
+			document.getElementsByClassName('nav-12').length > 0 &&
+			fileBrowserLoaded
+		) {
 			window.dispatchEvent(new CustomEvent('fileBrowserChanged'));
 		}
+
 		if (document.getElementsByClassName('nav-12').length === 0 && fileBrowserLoaded) {
 			fileBrowserLoaded = false;
 			window.dispatchEvent(new CustomEvent('fileBrowserUnloaded'));
 		}
+
 		if (window.App._fullscreenIsReady && window.App._state.selectedView.fullscreen && !fileLoaded) {
 			fileLoaded = true;
 			window.dispatchEvent(new CustomEvent('fileLoaded'));
 		}
+
 		if (window.App._fullscreenIsReady && window.App._state.selectedView.fullscreen === undefined && fileLoaded) {
 			fileLoaded = false;
 			window.dispatchEvent(new CustomEvent('fileUnloaded'));
 		}
+
 		if (document.querySelector('div[class*="modal--header--"]') && !modalOpened) {
 			modalOpened = true;
 			window.dispatchEvent(
 				new CustomEvent('modalOpened', {
-					detail: document.querySelector('div[class*="modal--header"]').innerText
+					detail: document.querySelector('div[class*="modal--header"]').innerText.trim()
 				})
 			);
 		}
+
 		if (!document.querySelector('div[class*="modal"]') && modalOpened) {
 			modalOpened = false;
 			window.dispatchEvent(new CustomEvent('modalClosed'));
 		}
+
 		if (window.App._state.dropdownShown && !menuOpened) {
 			menuOpened = true;
 			window.dispatchEvent(
@@ -49,6 +60,7 @@ export function startMutationObserver() {
 				})
 			);
 		}
+
 		if (!window.App._state.dropdownShown && menuOpened) {
 			menuOpened = false;
 			window.dispatchEvent(new CustomEvent('menuClosed'));
