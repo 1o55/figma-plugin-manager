@@ -59,7 +59,6 @@ export const FigmaPluginAPI = {
 	},
 	createKeyboardShortcut: (shortcut, triggerFunction) => {
 		document.querySelector('.focus-target').onkeydown = e => {
-			e.preventDefault();
 			if (
 				e.metaKey !== !shortcut.command &&
 				e.shiftKey !== !shortcut.shift &&
@@ -67,6 +66,7 @@ export const FigmaPluginAPI = {
 				e.altKey !== !shortcut.option &&
 				e.key.toLowerCase() === shortcut.key.toLowerCase()
 			) {
+				e.preventDefault();
 				triggerFunction();
 			}
 		};
