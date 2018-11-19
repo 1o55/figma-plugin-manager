@@ -7,9 +7,6 @@ import VModal from 'vue-js-modal';
 Vue.config.productionTip = false;
 Vue.use(VModal);
 
-if (!window.__figmaDesktop) {
-	window.figmaPlugin = FigmaPluginAPI;
-}
 const figmaPlugin = window.figmaPlugin;
 const app = document.createElement('div');
 app.id = 'pluginManagerApp';
