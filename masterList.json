@@ -1,8 +1,8 @@
 [
 	{
-		"id": "power-platform-theme-switcher",
-		"publishDate": "11/11/2018",
-		"manifest": "https://jachui.github.io/figma-theme-switcher/manifest.json"
+		"id": "find-and-replace",
+		"publishDate": "8/15/2018",
+		"manifest": "https://jachui.github.io/figma-find-and-replace-desktop/manifest.json"
 	},
 	{
 		"id": "pdf-export",
@@ -10,8 +10,13 @@
 		"manifest": "https://jachui.github.io/figma-pdf-export-typescript/manifest.json"
 	},
 	{
-		"id": "find-and-replace",
-		"publishDate": "8/15/2018",
-		"manifest": "https://jachui.github.io/figma-find-and-replace-desktop/manifest.json"
+		"id": "power-platform-theme-switcher",
+		"publishDate": "11/11/2018",
+		"manifest": "https://jachui.github.io/figma-theme-switcher/manifest.json"
+	},
+	{
+		"id": "open-in-desktop",
+		"publishDate": "11/18/2018",
+		"manifest": "https://jachui.github.io/figma-open-in-desktop/manifest.json"
 	}
 ]
