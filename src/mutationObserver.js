@@ -3,6 +3,7 @@ export function startMutationObserver() {
 	let fileLoaded = false;
 	let modalOpened = false;
 	let menuOpened = false;
+	let numberOfSubmenus = 0;
 	new MutationObserver(() => {
 		if (document.getElementsByClassName('nav-12').length > 0 && !fileBrowserLoaded) {
 			fileBrowserLoaded = true;
@@ -48,6 +49,7 @@ export function startMutationObserver() {
 
 		if (window.App._state.dropdownShown && !menuOpened) {
 			menuOpened = true;
+			console.log(window.App._state.dropdownShown.type);
 			window.dispatchEvent(
 				new CustomEvent('menuOpened', {
 					detail: {
@@ -60,6 +62,25 @@ export function startMutationObserver() {
 				})
 			);
 		}
+
+		if (
+			window.App._state.dropdownShown &&
+			menuOpened &&
+			document.querySelector('div[class*="multilevel_dropdown--menu"]') &&
+			document.querySelectorAll('div[class*="multilevel_dropdown--menu"]').length > numberOfSubmenus
+		) {
+			window.dispatchEvent(
+				new CustomEvent('submenuOpened', {
+					detail: {
+						type: window.App._state.dropdownShown.type,
+						highlightedOption: document.querySelectorAll('div[class*="multilevel_dropdown--optionActive"]')[
+							document.querySelectorAll('div[class*="multilevel_dropdown--menu"]').length - 1
+						].textContent
+					}
+				})
+			);
+		}
+		numberOfSubmenus = document.querySelectorAll('div[class*="multilevel_dropdown--menu"]').length;
 
 		if (!window.App._state.dropdownShown && menuOpened) {
 			menuOpened = false;

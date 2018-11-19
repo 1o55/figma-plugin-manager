@@ -88,6 +88,16 @@ button.button {
 		padding-left: 24px;
 		margin-right: 12px;
 	}
+	.plugin-dropdown-option-chevron {
+		font-family: 'FigmaIcons';
+		margin-left: auto;
+		padding-left: 24px;
+		margin-right: 12px;
+		&::after {
+			content: '\14c';
+			font-size: 10px;
+		}
+	}
 }
 
 .v--modal-overlay {
