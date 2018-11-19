@@ -50,23 +50,26 @@ export const FigmaPluginAPI = {
 		});
 	},
 	createContextMenuButton: {
-		Selection: (buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
+		Selection: (buttonLabel, triggerFunction, condition, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
 		},
-		Canvas: (buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
+		Canvas: (buttonLabel, triggerFunction, condition, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
 		},
-		ObjectsPanel: (buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
+		ObjectsPanel: (buttonLabel, triggerFunction, condition, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
 		},
-		Page: (buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
+		Page: (buttonLabel, triggerFunction, condition, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
 		},
-		Filename: (buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('FULLSCREEN_FILENAME_DROPDOWN', buttonLabel, triggerFunction, shortcut);
+		Filename: (buttonLabel, triggerFunction, condition, shortcut) => {
+			addMenuOption('FULLSCREEN_FILENAME_DROPDOWN', buttonLabel, triggerFunction, condition, shortcut);
 		},
-		Savepoint: (buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
+		Version: (buttonLabel, triggerFunction, condition, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
+		},
+		File: (buttonLabel, triggerFunction, condition, shortcut) => {
+			addMenuOption('file-actions-dropdown', buttonLabel, triggerFunction, condition, shortcut);
 		}
 	},
 	createKeyboardShortcut: (shortcut, triggerFunction) => {
@@ -102,27 +105,39 @@ export const FigmaPluginAPI = {
 	}
 };
 
-const addMenuOption = (menuType, buttonLabel, triggerFunction, shortcut) => {
+const addMenuOption = (menuType, buttonLabel, triggerFunction, condition, shortcut) => {
 	FigmaPluginAPI.onMenuOpened((type, hasMoreOptions) => {
 		if (type === menuType) {
-			if (!hasMoreOptions) injectMenuOption(menuType, false, buttonLabel, triggerFunction, shortcut);
+			if (typeof condition === 'function') {
+				if (condition()) {
+					if (!hasMoreOptions) injectMenuOption(menuType, false, buttonLabel, triggerFunction, shortcut);
+				}
+			} else {
+				if (!hasMoreOptions) injectMenuOption(menuType, false, buttonLabel, triggerFunction, shortcut);
+			}
 		}
 	});
 	FigmaPluginAPI.onSubmenuOpened((type, highlightedOption) => {
 		if (type === menuType) {
-			if (highlightedOption === 'More') injectMenuOption(menuType, true, buttonLabel, triggerFunction, shortcut);
+			if (typeof condition === 'function') {
+				if (condition()) {
+					if (highlightedOption === 'More') injectMenuOption(menuType, true, buttonLabel, triggerFunction, shortcut);
+				}
+			} else {
+				if (highlightedOption === 'More') injectMenuOption(menuType, true, buttonLabel, triggerFunction, shortcut);
+			}
 		}
 	});
 };
 
 const injectMenuOption = (menuType, isSubmenu, buttonLabel, triggerFunction, shortcut) => {
-	const isFilenameDropdown = menuType === 'FULLSCREEN_FILENAME_DROPDOWN';
+	const isFatDropdown = menuType === 'FULLSCREEN_FILENAME_DROPDOWN' || menuType === 'file-actions-dropdown';
 	const menu = isSubmenu
 		? document.querySelector('div[class*="multilevel_dropdown--menu--"]')
 		: document.querySelector('div[class*="dropdown--dropdown--"]');
 	const newMenuOption = document.createElement('div');
 	newMenuOption.className = 'plugin-dropdown-option';
-	if (isFilenameDropdown) newMenuOption.style.padding = '0 12px';
+	if (isFatDropdown) newMenuOption.style.padding = '0 12px';
 	const labelDiv = document.createElement('div');
 	labelDiv.className = 'plugin-dropdown-option-text';
 	labelDiv.innerText = buttonLabel;
@@ -143,7 +158,7 @@ const injectMenuOption = (menuType, isSubmenu, buttonLabel, triggerFunction, sho
 	}
 	menu.appendChild(newMenuOption);
 	const numberOfSeparators = [...menu.children].filter(node => node.className.includes('dropdown--separator')).length;
-	if (!isFilenameDropdown)
+	if (!isFatDropdown)
 		menu.style.top = isSubmenu
 			? `${parseInt(menu.style.top) - 24 - numberOfSeparators * 2}px`
 			: `${parseInt(menu.style.top) - 24}px`;
@@ -161,13 +176,15 @@ const injectMenuOption = (menuType, isSubmenu, buttonLabel, triggerFunction, sho
 		const activeNode = isSubmenu
 			? document.querySelectorAll('div[class*="multilevel_dropdown--optionActive"]')[1]
 			: document.querySelector('div[class*="multilevel_dropdown--optionActive"]');
-		const activeClassName = [...activeNode.classList].find(className => className.includes('optionActive'));
-		activeNode.classList.remove(activeClassName);
-		activeNode.onmouseover = e => {
-			if (submenu) {
-				submenu.style.display = '';
-			}
-			activeNode.classList.add(activeClassName);
-		};
+		if (activeNode) {
+			const activeClassName = [...activeNode.classList].find(className => className.includes('optionActive'));
+			activeNode.classList.remove(activeClassName);
+			activeNode.onmouseover = e => {
+				if (submenu) {
+					submenu.style.display = '';
+				}
+				activeNode.classList.add(activeClassName);
+			};
+		}
 	};
 };
