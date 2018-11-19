@@ -1,108 +1,106 @@
-if (!window.__figmaDesktop) {
-	window.figmaPlugin = {
-		onFileBrowserLoaded: triggerFunction => {
-			window.addEventListener('fileBrowserLoaded', () => {
-				triggerFunction();
-			});
+window.figmaPlugin = {
+	onFileBrowserLoaded: triggerFunction => {
+		window.addEventListener('fileBrowserLoaded', () => {
+			triggerFunction();
+		});
+	},
+	onFileBrowserChanged: triggerFunction => {
+		window.addEventListener('fileBrowserChanged', () => {
+			triggerFunction();
+		});
+	},
+	onFileBrowserUnloaded: triggerFunction => {
+		window.addEventListener('fileBrowserUnloaded', () => {
+			triggerFunction();
+		});
+	},
+	onFileLoaded: triggerFunction => {
+		window.addEventListener('fileLoaded', () => {
+			triggerFunction();
+		});
+	},
+	onFileUnloaded: triggerFunction => {
+		window.addEventListener('fileUnloaded', () => {
+			triggerFunction();
+		});
+	},
+	onModalOpened: triggerFunction => {
+		window.addEventListener('modalOpened', event => {
+			triggerFunction(event.detail);
+		});
+	},
+	onModalClosed: triggerFunction => {
+		window.addEventListener('modalClosed', () => {
+			triggerFunction();
+		});
+	},
+	onMenuOpened: triggerFunction => {
+		window.addEventListener('menuOpened', event => {
+			triggerFunction(event.detail.type, event.detail.hasMoreOptions);
+		});
+	},
+	onSubmenuOpened: triggerFunction => {
+		window.addEventListener('submenuOpened', event => {
+			triggerFunction(event.detail.type, event.detail.highlightedOption);
+		});
+	},
+	onMenuClosed: triggerFunction => {
+		window.addEventListener('menuClosed', () => {
+			triggerFunction();
+		});
+	},
+	createContextMenuButton: {
+		Selection: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
 		},
-		onFileBrowserChanged: triggerFunction => {
-			window.addEventListener('fileBrowserChanged', () => {
-				triggerFunction();
-			});
+		Canvas: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
 		},
-		onFileBrowserUnloaded: triggerFunction => {
-			window.addEventListener('fileBrowserUnloaded', () => {
-				triggerFunction();
-			});
+		ObjectsPanel: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
 		},
-		onFileLoaded: triggerFunction => {
-			window.addEventListener('fileLoaded', () => {
-				triggerFunction();
-			});
+		Page: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
 		},
-		onFileUnloaded: triggerFunction => {
-			window.addEventListener('fileUnloaded', () => {
-				triggerFunction();
-			});
+		Filename: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('FULLSCREEN_FILENAME_DROPDOWN', buttonLabel, triggerFunction, shortcut);
 		},
-		onModalOpened: triggerFunction => {
-			window.addEventListener('modalOpened', event => {
-				triggerFunction(event.detail);
-			});
-		},
-		onModalClosed: triggerFunction => {
-			window.addEventListener('modalClosed', () => {
-				triggerFunction();
-			});
-		},
-		onMenuOpened: triggerFunction => {
-			window.addEventListener('menuOpened', event => {
-				triggerFunction(event.detail.type, event.detail.hasMoreOptions);
-			});
-		},
-		onSubmenuOpened: triggerFunction => {
-			window.addEventListener('submenuOpened', event => {
-				triggerFunction(event.detail.type, event.detail.highlightedOption);
-			});
-		},
-		onMenuClosed: triggerFunction => {
-			window.addEventListener('menuClosed', () => {
-				triggerFunction();
-			});
-		},
-		createContextMenuButton: {
-			Selection: (buttonLabel, triggerFunction, shortcut) => {
-				addMenuOption('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
-			},
-			Canvas: (buttonLabel, triggerFunction, shortcut) => {
-				addMenuOption('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
-			},
-			ObjectsPanel: (buttonLabel, triggerFunction, shortcut) => {
-				addMenuOption('DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
-			},
-			Page: (buttonLabel, triggerFunction, shortcut) => {
-				addMenuOption('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
-			},
-			Filename: (buttonLabel, triggerFunction, shortcut) => {
-				addMenuOption('FULLSCREEN_FILENAME_DROPDOWN', buttonLabel, triggerFunction, shortcut);
-			},
-			Savepoint: (buttonLabel, triggerFunction, shortcut) => {
-				addMenuOption('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
-			}
-		},
-		createKeyboardShortcut: (shortcut, triggerFunction) => {
-			document.querySelector('.focus-target').onkeydown = e => {
-				if (
-					e.metaKey !== !shortcut.command &&
-					e.shiftKey !== !shortcut.shift &&
-					e.ctrlKey !== !shortcut.control &&
-					e.altKey !== !shortcut.option &&
-					e.key.toLowerCase() === shortcut.key.toLowerCase()
-				) {
-					e.preventDefault();
-					triggerFunction();
-				}
-			};
-		},
-		addTooltip: (element, tooltipText, showAfterDelay) => {
-			element.addEventListener('mousemove', () => {
-				window.App._dispatch({
-					type: showAfterDelay ? 'TOOLTIP_SHOW_AFTER_DELAY' : 'TOOLTIP_SHOW_IMMEDIATELY',
-					payload: {
-						interactive: false,
-						position: 0,
-						target: { kind: 2, text: tooltipText },
-						targetRect: element.getBoundingClientRect(),
-						timeoutDelay: 500
-					}
-				});
-			});
-			element.addEventListener('click', () => {
-				if (window.App._state.tooltip.state === 1) window.App._dispatch({ type: 'TOOLTIP_HIDE' });
-			});
+		Savepoint: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
 		}
-	};
-}
+	},
+	createKeyboardShortcut: (shortcut, triggerFunction) => {
+		document.querySelector('.focus-target').onkeydown = e => {
+			if (
+				e.metaKey !== !shortcut.command &&
+				e.shiftKey !== !shortcut.shift &&
+				e.ctrlKey !== !shortcut.control &&
+				e.altKey !== !shortcut.option &&
+				e.key.toLowerCase() === shortcut.key.toLowerCase()
+			) {
+				e.preventDefault();
+				triggerFunction();
+			}
+		};
+	},
+	addTooltip: (element, tooltipText, showAfterDelay) => {
+		element.addEventListener('mousemove', () => {
+			window.App._dispatch({
+				type: showAfterDelay ? 'TOOLTIP_SHOW_AFTER_DELAY' : 'TOOLTIP_SHOW_IMMEDIATELY',
+				payload: {
+					interactive: false,
+					position: 0,
+					target: { kind: 2, text: tooltipText },
+					targetRect: element.getBoundingClientRect(),
+					timeoutDelay: 500
+				}
+			});
+		});
+		element.addEventListener('click', () => {
+			if (window.App._state.tooltip.state === 1) window.App._dispatch({ type: 'TOOLTIP_HIDE' });
+		});
+	}
+};
 
 const addMenuOption = (menuType, buttonLabel, triggerFunction, shortcut) => {
 	window.figmaPlugin.onMenuOpened((type, hasMoreOptions) => {
