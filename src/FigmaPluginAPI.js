@@ -1,4 +1,4 @@
-export const FigmaPluginAPI = {
+window.figmaPlugin = {
 	onFileBrowserLoaded: triggerFunction => {
 		window.addEventListener('fileBrowserLoaded', () => {
 			triggerFunction();
@@ -50,23 +50,23 @@ export const FigmaPluginAPI = {
 		});
 	},
 	createContextMenuButton: {
-		Selection: (id, buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
+		Selection: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
 		},
-		Canvas: (id, buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
+		Canvas: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
 		},
-		ObjectsPanel: (id, buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
+		ObjectsPanel: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
 		},
-		Page: (id, buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
+		Page: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
 		},
-		Filename: (id, buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('FULLSCREEN_FILENAME_DROPDOWN', id, buttonLabel, triggerFunction, shortcut);
+		Filename: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('FULLSCREEN_FILENAME_DROPDOWN', buttonLabel, triggerFunction, shortcut);
 		},
-		Savepoint: (id, buttonLabel, triggerFunction, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
+		Savepoint: (buttonLabel, triggerFunction, shortcut) => {
+			addMenuOption('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', buttonLabel, triggerFunction, shortcut);
 		}
 	},
 	createKeyboardShortcut: (shortcut, triggerFunction) => {
@@ -102,26 +102,27 @@ export const FigmaPluginAPI = {
 	}
 };
 
-const addMenuOption = (menuType, id, buttonLabel, triggerFunction, shortcut) => {
+const addMenuOption = (menuType, buttonLabel, triggerFunction, shortcut) => {
 	FigmaPluginAPI.onMenuOpened((type, hasMoreOptions) => {
 		if (type === menuType) {
-			if (!hasMoreOptions) injectMenuOption(false, id, buttonLabel, triggerFunction, shortcut);
+			if (!hasMoreOptions) injectMenuOption(menuType, false, buttonLabel, triggerFunction, shortcut);
 		}
 	});
 	FigmaPluginAPI.onSubmenuOpened((type, highlightedOption) => {
 		if (type === menuType) {
-			if (highlightedOption === 'More') injectMenuOption(true, id, buttonLabel, triggerFunction, shortcut);
+			if (highlightedOption === 'More') injectMenuOption(menuType, true, buttonLabel, triggerFunction, shortcut);
 		}
 	});
 };
 
-const injectMenuOption = (isSubmenu, id, buttonLabel, triggerFunction, shortcut) => {
+const injectMenuOption = (menuType, isSubmenu, buttonLabel, triggerFunction, shortcut) => {
+	const isFilenameDropdown = menuType === 'FULLSCREEN_FILENAME_DROPDOWN';
 	const menu = isSubmenu
 		? document.querySelector('div[class*="multilevel_dropdown--menu--"]')
 		: document.querySelector('div[class*="dropdown--dropdown--"]');
 	const newMenuOption = document.createElement('div');
 	newMenuOption.className = 'plugin-dropdown-option';
-	newMenuOption.id = id;
+	if (isFilenameDropdown) newMenuOption.style.padding = '0 12px';
 	const labelDiv = document.createElement('div');
 	labelDiv.className = 'plugin-dropdown-option-text';
 	labelDiv.innerText = buttonLabel;
@@ -142,9 +143,10 @@ const injectMenuOption = (isSubmenu, id, buttonLabel, triggerFunction, shortcut)
 	}
 	menu.appendChild(newMenuOption);
 	const numberOfSeparators = [...menu.children].filter(node => node.className.includes('dropdown--separator')).length;
-	menu.style.top = isSubmenu
-		? `${parseInt(menu.style.top) - 24 - numberOfSeparators * 2}px`
-		: `${parseInt(menu.style.top) - 24}px`;
+	if (!isFilenameDropdown)
+		menu.style.top = isSubmenu
+			? `${parseInt(menu.style.top) - 24 - numberOfSeparators * 2}px`
+			: `${parseInt(menu.style.top) - 24}px`;
 	newMenuOption.onclick = () => {
 		triggerFunction();
 		window.App._dispatch({ type: 'HIDE_DROPDOWN' });
