@@ -49,7 +49,6 @@ export function startMutationObserver() {
 
 		if (window.App._state.dropdownShown && !menuOpened) {
 			menuOpened = true;
-			console.log(window.App._state.dropdownShown.type);
 			window.dispatchEvent(
 				new CustomEvent('menuOpened', {
 					detail: {
