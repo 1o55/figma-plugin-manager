@@ -105,12 +105,12 @@ if (!window.__figmaDesktop) {
 }
 
 const addMenuOption = (menuType, buttonLabel, triggerFunction, shortcut) => {
-	FigmaPluginAPI.onMenuOpened((type, hasMoreOptions) => {
+	window.figmaPlugin.onMenuOpened((type, hasMoreOptions) => {
 		if (type === menuType) {
 			if (!hasMoreOptions) injectMenuOption(menuType, false, buttonLabel, triggerFunction, shortcut);
 		}
 	});
-	FigmaPluginAPI.onSubmenuOpened((type, highlightedOption) => {
+	window.figmaPlugin.onSubmenuOpened((type, highlightedOption) => {
 		if (type === menuType) {
 			if (highlightedOption === 'More') injectMenuOption(menuType, true, buttonLabel, triggerFunction, shortcut);
 		}
