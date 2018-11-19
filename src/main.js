@@ -50,17 +50,21 @@ if (!window.__figmaDesktop) startMutationObserver();
 if (JSON.parse(localStorage.getItem('installedPlugins')) !== null) {
 	const installedPlugins = JSON.parse(localStorage.getItem('installedPlugins'));
 	installedPlugins.forEach(plugin => {
-		plugin.css.forEach(css => {
-			const styles = document.createElement('link');
-			styles.rel = 'stylesheet';
-			styles.type = 'text/css';
-			styles.href = css + '?_=' + new Date().getTime();
-			document.body.appendChild(styles);
-		});
-		plugin.js.forEach(js => {
-			const script = document.createElement('script');
-			script.src = js + '?_=' + new Date().getTime();
-			document.body.appendChild(script);
-		});
+		if (plugin.css) {
+			plugin.css.forEach(css => {
+				const styles = document.createElement('link');
+				styles.rel = 'stylesheet';
+				styles.type = 'text/css';
+				styles.href = css + '?_=' + new Date().getTime();
+				document.body.appendChild(styles);
+			});
+		}
+		if (plugin.js) {
+			plugin.js.forEach(js => {
+				const script = document.createElement('script');
+				script.src = js + '?_=' + new Date().getTime();
+				document.body.appendChild(script);
+			});
+		}
 	});
 }
