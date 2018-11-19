@@ -61,6 +61,12 @@ export const FigmaPluginAPI = {
 		},
 		Page: (id, buttonLabel, triggerFunction, shortcut) => {
 			createContextMenuButton('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
+		},
+		Filename: (id, buttonLabel, triggerFunction, shortcut) => {
+			createContextMenuButton('FULLSCREEN_FILENAME_DROPDOWN', id, buttonLabel, triggerFunction, shortcut);
+		},
+		Savepoint: (id, buttonLabel, triggerFunction, shortcut) => {
+			createContextMenuButton('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
 		}
 	},
 	createKeyboardShortcut: (shortcut, triggerFunction) => {
