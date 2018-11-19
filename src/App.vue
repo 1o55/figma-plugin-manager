@@ -30,6 +30,7 @@ export default {
 	},
 	data: () => ({
 		orgId: '',
+		isDesktop: window.__figmaDesktop,
 		modalOpened: false,
 		searchText: '',
 		selectedPlugin: {},
@@ -61,12 +62,15 @@ export default {
 	},
 	computed: {
 		searchedPlugins() {
-			const availablePlugins =
+			let availablePlugins =
 				this.orgId === ''
 					? this.plugins.filter(plugin => !plugin.requiredOrgId || plugin.requiredOrgId === '')
 					: this.plugins.filter(
 							plugin => !plugin.requiredOrgId || plugin.requiredOrgId === '' || plugin.requiredOrgId === this.orgId
 					  );
+			availablePlugins = availablePlugins.filter(plugin => {
+				return this.isDesktop ? !plugin.webOnly : !plugin.desktopOnly;
+			});
 			if (!this.installedScreenOn) {
 				return availablePlugins
 					.filter(plugin => {
