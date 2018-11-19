@@ -1,4 +1,4 @@
-window.figmaPlugin = {
+export const FigmaPluginAPI = {
 	onFileBrowserLoaded: triggerFunction => {
 		window.addEventListener('fileBrowserLoaded', () => {
 			triggerFunction();
@@ -103,12 +103,12 @@ window.figmaPlugin = {
 };
 
 const addMenuOption = (menuType, buttonLabel, triggerFunction, shortcut) => {
-	window.figmaPlugin.onMenuOpened((type, hasMoreOptions) => {
+	FigmaPluginAPI.onMenuOpened((type, hasMoreOptions) => {
 		if (type === menuType) {
 			if (!hasMoreOptions) injectMenuOption(menuType, false, buttonLabel, triggerFunction, shortcut);
 		}
 	});
-	window.figmaPlugin.onSubmenuOpened((type, highlightedOption) => {
+	FigmaPluginAPI.onSubmenuOpened((type, highlightedOption) => {
 		if (type === menuType) {
 			if (highlightedOption === 'More') injectMenuOption(menuType, true, buttonLabel, triggerFunction, shortcut);
 		}
