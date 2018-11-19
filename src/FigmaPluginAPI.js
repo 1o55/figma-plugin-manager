@@ -57,16 +57,16 @@ export const FigmaPluginAPI = {
 			addMenuOption('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
 		},
 		ObjectsPanel: (id, buttonLabel, triggerFunction, shortcut) => {
-			createContextMenuButton('DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
+			addMenuOption('DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
 		},
 		Page: (id, buttonLabel, triggerFunction, shortcut) => {
-			createContextMenuButton('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
+			addMenuOption('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
 		},
 		Filename: (id, buttonLabel, triggerFunction, shortcut) => {
-			createContextMenuButton('FULLSCREEN_FILENAME_DROPDOWN', id, buttonLabel, triggerFunction, shortcut);
+			addMenuOption('FULLSCREEN_FILENAME_DROPDOWN', id, buttonLabel, triggerFunction, shortcut);
 		},
 		Savepoint: (id, buttonLabel, triggerFunction, shortcut) => {
-			createContextMenuButton('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
+			addMenuOption('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', id, buttonLabel, triggerFunction, shortcut);
 		}
 	},
 	createKeyboardShortcut: (shortcut, triggerFunction) => {
