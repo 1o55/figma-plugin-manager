@@ -49,27 +49,41 @@ export const FigmaPluginAPI = {
 			triggerFunction();
 		});
 	},
-	createContextMenuButton: {
+	onDomChanged: triggerFunction => {
+		window.addEventListener('domChanged', event => {
+			triggerFunction(event.detail);
+		});
+	},
+	createPluginsMenuItem: (buttonLabel, triggerFunction, condition, shortcut) => {
+		window.addEventListener('pluginOptionsFound', () => {
+			if (typeof condition === 'function') {
+				if (condition()) {
+					injectPluginsMenuItem(buttonLabel, triggerFunction, shortcut);
+				}
+			} else injectPluginsMenuItem(buttonLabel, triggerFunction, shortcut);
+		});
+	},
+	createContextMenuItem: {
 		Selection: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
+			addMenuItem('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
 		},
 		Canvas: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
+			addMenuItem('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
 		},
 		ObjectsPanel: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
+			addMenuItem('DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
 		},
 		Page: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
+			addMenuItem('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
 		},
 		Filename: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuOption('FULLSCREEN_FILENAME_DROPDOWN', buttonLabel, triggerFunction, condition, shortcut);
+			addMenuItem('FULLSCREEN_FILENAME_DROPDOWN', buttonLabel, triggerFunction, condition, shortcut);
 		},
 		Version: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuOption('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
+			addMenuItem('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
 		},
 		File: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuOption('file-actions-dropdown', buttonLabel, triggerFunction, condition, shortcut);
+			addMenuItem('file-actions-dropdown', buttonLabel, triggerFunction, condition, shortcut);
 		}
 	},
 	createKeyboardShortcut: (shortcut, triggerFunction) => {
@@ -120,18 +134,24 @@ export const FigmaPluginAPI = {
 		inputNode.value = text;
 		inputNode.dispatchEvent(new InputEvent('input'));
 		App.triggerAction('leave-edit-mode');
+	},
+	getNodeType: node => {
+		return App._state.mirror.sceneGraph.get(node).type;
+	},
+	getTextContent: node => {
+		return App.sendMessage('inspectNodeForInteractionTests', { nodeId: node }).args.extractedText;
 	}
 };
 
-const addMenuOption = (menuType, buttonLabel, triggerFunction, condition, shortcut) => {
+const addMenuItem = (menuType, buttonLabel, triggerFunction, condition, shortcut) => {
 	FigmaPluginAPI.onMenuOpened((type, hasMoreOptions) => {
 		if (type === menuType) {
 			if (typeof condition === 'function') {
 				if (condition()) {
-					if (!hasMoreOptions) injectMenuOption(menuType, false, buttonLabel, triggerFunction, shortcut);
+					if (!hasMoreOptions) injectMenuItem(menuType, false, buttonLabel, triggerFunction, shortcut);
 				}
 			} else {
-				if (!hasMoreOptions) injectMenuOption(menuType, false, buttonLabel, triggerFunction, shortcut);
+				if (!hasMoreOptions) injectMenuItem(menuType, false, buttonLabel, triggerFunction, shortcut);
 			}
 		}
 	});
@@ -139,27 +159,27 @@ const addMenuOption = (menuType, buttonLabel, triggerFunction, condition, shortc
 		if (type === menuType) {
 			if (typeof condition === 'function') {
 				if (condition()) {
-					if (highlightedOption === 'More') injectMenuOption(menuType, true, buttonLabel, triggerFunction, shortcut);
+					if (highlightedOption === 'More') injectMenuItem(menuType, true, buttonLabel, triggerFunction, shortcut);
 				}
 			} else {
-				if (highlightedOption === 'More') injectMenuOption(menuType, true, buttonLabel, triggerFunction, shortcut);
+				if (highlightedOption === 'More') injectMenuItem(menuType, true, buttonLabel, triggerFunction, shortcut);
 			}
 		}
 	});
 };
 
-const injectMenuOption = (menuType, isSubmenu, buttonLabel, triggerFunction, shortcut) => {
+const injectMenuItem = (menuType, isSubmenu, buttonLabel, triggerFunction, shortcut) => {
 	const isFatDropdown = menuType === 'FULLSCREEN_FILENAME_DROPDOWN' || menuType === 'file-actions-dropdown';
 	const menu = isSubmenu
 		? document.querySelector('div[class*="multilevel_dropdown--menu--"]')
 		: document.querySelector('div[class*="dropdown--dropdown--"]');
-	const newMenuOption = document.createElement('div');
-	newMenuOption.className = 'plugin-dropdown-option';
-	if (isFatDropdown) newMenuOption.style.padding = '0 12px';
+	const newMenuItem = document.createElement('div');
+	newMenuItem.className = 'plugin-dropdown-option';
+	if (isFatDropdown) newMenuItem.style.padding = '0 12px';
 	const labelDiv = document.createElement('div');
 	labelDiv.className = 'plugin-dropdown-option-text';
 	labelDiv.innerText = buttonLabel;
-	newMenuOption.appendChild(labelDiv);
+	newMenuItem.appendChild(labelDiv);
 	if (shortcut) {
 		let shortcutText = '';
 		shortcutText += shortcut.control ? '⌃' : '';
@@ -171,20 +191,20 @@ const injectMenuOption = (menuType, isSubmenu, buttonLabel, triggerFunction, sho
 			const shortcutDiv = document.createElement('div');
 			shortcutDiv.className = 'plugin-dropdown-option-shortcut';
 			shortcutDiv.innerText = shortcutText;
-			newMenuOption.appendChild(shortcutDiv);
+			newMenuItem.appendChild(shortcutDiv);
 		}
 	}
-	menu.appendChild(newMenuOption);
+	menu.appendChild(newMenuItem);
 	const numberOfSeparators = [...menu.children].filter(node => node.className.includes('dropdown--separator')).length;
 	if (!isFatDropdown)
 		menu.style.top = isSubmenu
 			? `${parseInt(menu.style.top) - 24 - numberOfSeparators * 2}px`
 			: `${parseInt(menu.style.top) - 24}px`;
-	newMenuOption.onclick = () => {
+	newMenuItem.onclick = () => {
 		triggerFunction();
 		window.App._dispatch({ type: 'HIDE_DROPDOWN' });
 	};
-	newMenuOption.onmouseover = () => {
+	newMenuItem.onmouseover = () => {
 		const submenu = isSubmenu
 			? document.querySelectorAll('div[class*="multilevel_dropdown--menu"]')[1]
 			: document.querySelector('div[class*="multilevel_dropdown--menu"]');
@@ -204,5 +224,39 @@ const injectMenuOption = (menuType, isSubmenu, buttonLabel, triggerFunction, sho
 				activeNode.classList.add(activeClassName);
 			};
 		}
+	};
+};
+
+const injectPluginsMenuItem = (buttonLabel, triggerFunction, shortcut) => {
+	const pluginOptions = document.getElementById('pluginOptions');
+	if (pluginOptions.style.borderBottom === '') {
+		pluginOptions.style.borderBottom = '1px solid #2c2c2c';
+		pluginOptions.style.paddingBottom = '6px';
+		pluginOptions.style.marginBottom = '6px';
+	}
+	const newMenuItem = document.createElement('div');
+	newMenuItem.className = 'plugin-dropdown-option';
+	const labelDiv = document.createElement('div');
+	labelDiv.className = 'plugin-dropdown-option-text';
+	labelDiv.innerText = buttonLabel;
+	newMenuItem.appendChild(labelDiv);
+	if (shortcut) {
+		let shortcutText = '';
+		shortcutText += shortcut.control ? '⌃' : '';
+		shortcutText += shortcut.option ? '⌥' : '';
+		shortcutText += shortcut.shift ? '⇧' : '';
+		shortcutText += shortcut.command ? '⌘' : '';
+		shortcutText += shortcut.key ? shortcut.key.toUpperCase() : '';
+		if (shortcutText !== '') {
+			const shortcutDiv = document.createElement('div');
+			shortcutDiv.className = 'plugin-dropdown-option-shortcut';
+			shortcutDiv.innerText = shortcutText;
+			newMenuItem.appendChild(shortcutDiv);
+		}
+	}
+	pluginOptions.appendChild(newMenuItem);
+	newMenuItem.onclick = () => {
+		triggerFunction();
+		window.App._dispatch({ type: 'HIDE_DROPDOWN' });
 	};
 };

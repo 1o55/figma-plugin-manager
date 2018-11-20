@@ -85,7 +85,7 @@ export default {
 					.filter(plugin => {
 						return plugin.name.toLowerCase().match(this.searchText.toLowerCase());
 					})
-					.sort((a, b) => new Date(a.publishDate) - new Date(b.publishDate));
+					.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
 			}
 		},
 		numberOfUpdates() {
@@ -111,13 +111,14 @@ export default {
 		},
 		openModal() {
 			this.modalOpened = true;
-			document.querySelector('#pluginManagerButton').classList.add('active');
+			if (document.getElementById('pluginManagerButton'))
+				document.getElementById('pluginManagerButton').classList.add('active');
 		},
 		modalClosed() {
 			this.installedScreenOn = false;
 			this.modalOpened = false;
 			this.detailScreenOn = false;
-			if (document.querySelector('#pluginManagerButton') !== null)
+			if (document.getElementById('pluginManagerButton'))
 				document.querySelector('#pluginManagerButton').classList.remove('active');
 		},
 		toggleModal() {

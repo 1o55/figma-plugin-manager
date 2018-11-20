@@ -29,6 +29,7 @@ const injectpluginManagerButton = () => {
 };
 
 FigmaPluginAPI.onFileBrowserLoaded(() => {
+	vue.$children[0].hide();
 	if (document.querySelector('#pluginManagerButton') === null) injectpluginManagerButton();
 });
 
@@ -44,6 +45,70 @@ FigmaPluginAPI.onFileBrowserUnloaded(() => {
 if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null) {
 	if (document.querySelector('#pluginManagerButton') === null) injectpluginManagerButton();
 }
+
+FigmaPluginAPI.onMenuOpened(type => {
+	if (type === 'fullscreen-menu-dropdown') {
+		const preferences = document.querySelectorAll('div[class*="multilevel_dropdown--option"]')[8];
+		const pluginMenuOption = document.createElement('div');
+		pluginMenuOption.className = 'plugin-dropdown-option';
+		pluginMenuOption.id = 'plugin-menu';
+		const labelDiv = document.createElement('div');
+		labelDiv.className = 'plugin-dropdown-option-text';
+		labelDiv.innerText = 'Plugins';
+		const shortcutDiv = document.createElement('div');
+		shortcutDiv.className = 'plugin-dropdown-option-chevron';
+		pluginMenuOption.appendChild(labelDiv);
+		pluginMenuOption.appendChild(shortcutDiv);
+		preferences.parentNode.insertBefore(pluginMenuOption, preferences.nextSibling);
+		const pluginSubmenu = document.createElement('div');
+		pluginSubmenu.id = 'pluginSubmenu';
+		pluginSubmenu.className = 'plugin-dropdown-submenu';
+		const pluginOptions = document.createElement('div');
+		pluginOptions.id = 'pluginOptions';
+		const managePluginButton = document.createElement('div');
+		managePluginButton.className = 'plugin-dropdown-option';
+		managePluginButton.onclick = () => {
+			vue.$children[0].toggleModal();
+		};
+		const managePluginButtonLabel = document.createElement('div');
+		managePluginButtonLabel.className = 'plugin-dropdown-option-text';
+		managePluginButtonLabel.innerText = 'Manage Plugins';
+		managePluginButton.appendChild(managePluginButtonLabel);
+		pluginSubmenu.appendChild(pluginOptions);
+		pluginSubmenu.appendChild(managePluginButton);
+		pluginSubmenu.style.display = 'none';
+		document.querySelector('div[class*="dropdown--dropdown--"]').parentElement.parentElement.appendChild(pluginSubmenu);
+		pluginMenuOption.onclick = e => {
+			e.preventDefault(), e.stopPropagation();
+		};
+		pluginMenuOption.onmouseover = e => {
+			e.stopPropagation();
+			pluginMenuOption.style.backgroundColor = '#30c2ff';
+			const submenu = document.querySelector('div[class*="multilevel_dropdown--menu"]');
+			if (submenu) {
+				submenu.style.display = 'none';
+			}
+			const activeNode = document.querySelector('div[class*="multilevel_dropdown--optionActive"]');
+			if (activeNode) {
+				const activeClassName = [...activeNode.classList].find(className => className.includes('optionActive'));
+				activeNode.classList.remove(activeClassName);
+				activeNode.onmouseover = e => {
+					if (submenu) {
+						submenu.style.display = '';
+					}
+					activeNode.classList.add(activeClassName);
+				};
+			}
+			pluginSubmenu.style.top = `${pluginMenuOption.getBoundingClientRect().top - 6}px`;
+			pluginSubmenu.style.left = `${pluginMenuOption.getBoundingClientRect().right}px`;
+			pluginSubmenu.style.display = 'block';
+		};
+		document.querySelector('div[class*="dropdown--dropdown--"]').onmouseover = () => {
+			pluginSubmenu.style.display = 'none';
+			pluginMenuOption.style.backgroundColor = '';
+		};
+	}
+});
 
 if (!window.__figmaDesktop) startMutationObserver();
 

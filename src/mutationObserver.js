@@ -3,8 +3,10 @@ export function startMutationObserver() {
 	let fileLoaded = false;
 	let modalOpened = false;
 	let menuOpened = false;
+	let pluginOptionsFound = false;
 	let numberOfSubmenus = 0;
-	new MutationObserver(() => {
+	new MutationObserver(mutations => {
+		window.dispatchEvent(new CustomEvent('domChanged', { detail: mutations }));
 		if (document.getElementsByClassName('nav-12').length > 0 && !fileBrowserLoaded) {
 			fileBrowserLoaded = true;
 			window.dispatchEvent(new CustomEvent('fileBrowserLoaded'));
@@ -83,7 +85,13 @@ export function startMutationObserver() {
 
 		if (!window.App._state.dropdownShown && menuOpened) {
 			menuOpened = false;
+			pluginOptionsFound = false;
 			window.dispatchEvent(new CustomEvent('menuClosed'));
+		}
+
+		if (document.getElementById('pluginOptions') && !pluginOptionsFound) {
+			pluginOptionsFound = true;
+			window.dispatchEvent(new CustomEvent('pluginOptionsFound'));
 		}
 	}).observe(document.getElementById('react-page'), { childList: true, subtree: true });
 }
