@@ -85,7 +85,7 @@ export default {
 					.filter(plugin => {
 						return plugin.name.toLowerCase().match(this.searchText.toLowerCase());
 					})
-					.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+					.sort((a, b) => new Date(a.publishDate) - new Date(b.publishDate));
 			}
 		},
 		numberOfUpdates() {

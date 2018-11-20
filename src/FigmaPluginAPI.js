@@ -102,6 +102,24 @@ export const FigmaPluginAPI = {
 		element.addEventListener('click', () => {
 			if (window.App._state.tooltip.state === 1) window.App._dispatch({ type: 'TOOLTIP_HIDE' });
 		});
+	},
+	forEachSelectedNode: triggerFunction => {
+		const selectedNodes = Object.keys(App._state.mirror.sceneGraphSelection);
+		for (let i = 0; i < selectedNodes.length; i++) {
+			const node = selectedNodes[i];
+			App.sendMessage('clearSelection');
+			App.sendMessage('addToSelection', { nodeIds: [node] });
+			triggerFunction(node);
+		}
+		App.sendMessage('addToSelection', { nodeIds: selectedNodes });
+	},
+	replaceText: text => {
+		App.triggerAction('request-edit-mode');
+		var inputNode = document.getElementsByClassName('focus-target')[0];
+		inputNode.focus();
+		inputNode.value = text;
+		inputNode.dispatchEvent(new InputEvent('input'));
+		App.triggerAction('leave-edit-mode');
 	}
 };
 
