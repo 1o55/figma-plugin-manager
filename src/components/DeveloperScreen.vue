@@ -2,8 +2,8 @@
 	.developer-screen(@click='editing = ""')
 		.header
 			.title Development server
-			button.button.primary(v-show='!connected' @click.stop='connected = true') Connect
-			button.button(v-show='connected' @click.stop='connected = false') Disconnect
+			button.button.primary(v-show='!connected' @click.stop='connect') Connect
+			button.button(v-show='connected' @click.stop='disconnect') Disconnect
 		.content
 			.section
 				.title Port
@@ -89,6 +89,54 @@ export default {
 			localServer.jsFiles = this.jsFiles;
 			localServer.cssFiles = this.cssFiles;
 			localStorage.setItem('localServer', JSON.stringify(localServer));
+		},
+		connect() {
+			this.connected = true;
+			const toast = {
+				type: 'VISUAL_BELL_ENQUEUE',
+				payload: {
+					type: 'installed_plugin',
+					message: window.__figmaDesktop
+						? 'Connected to development server. Restart the app to see changes.'
+						: 'Connected to development server. Refresh this page to see changes.',
+					timeout: 10e3
+				}
+			};
+			window.__figmaDesktop
+				? null
+				: Object.assign(toast.payload, {
+						button: {
+							text: 'Refresh',
+							action: () => {
+								location.reload();
+							}
+						}
+				  });
+			window.App._dispatch(toast);
+		},
+		disconnect() {
+			this.connected = false;
+			const toast = {
+				type: 'VISUAL_BELL_ENQUEUE',
+				payload: {
+					type: 'installed_plugin',
+					message: window.__figmaDesktop
+						? 'Development server disconnected. Restart the app to see changes.'
+						: 'Development server disconnected. Refresh this page to see changes.',
+					timeout: 10e3
+				}
+			};
+			window.__figmaDesktop
+				? null
+				: Object.assign(toast.payload, {
+						button: {
+							text: 'Refresh',
+							action: () => {
+								location.reload();
+							}
+						}
+				  });
+			window.App._dispatch(toast);
 		},
 		addPath(type) {
 			const files = type === 'js' ? this.jsFiles : this.cssFiles;
