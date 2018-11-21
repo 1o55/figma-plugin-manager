@@ -3,8 +3,14 @@ import { FigmaPluginAPI } from './FigmaPluginAPI';
 import Vue from 'vue';
 import App from './App.vue';
 import VModal from 'vue-js-modal';
+import shajs from 'sha.js';
 Vue.config.productionTip = false;
 Vue.use(VModal);
+console.log(
+	shajs('sha256')
+		.update('abc')
+		.digest('hex')
+);
 
 window.figmaPlugin = FigmaPluginAPI;
 window.vue = Vue;

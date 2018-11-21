@@ -56,11 +56,11 @@ export default {
 		} else localStorage.setItem('installedPlugins', JSON.stringify([]));
 		masterList.forEach(pluginEntry => {
 			const pluginRequest = new XMLHttpRequest();
-			pluginRequest.addEventListener('load', function() {
-				const plugin = JSON.parse(this.responseText);
-				plugin.publishDate = pluginRequest.publishDate;
+			pluginRequest.onload = () => {
+				const plugin = JSON.parse(pluginRequest.responseText);
+				plugin.publishDate = pluginEntry.publishDate;
 				self.plugins.push(plugin);
-			});
+			};
 			pluginRequest.open('GET', pluginEntry.manifest + '?_=' + new Date().getTime());
 			pluginRequest.send();
 		});

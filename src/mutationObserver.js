@@ -4,6 +4,7 @@ export function startMutationObserver() {
 	let modalOpened = false;
 	let menuOpened = false;
 	let pluginOptionsFound = false;
+	let focusTargetFound = false;
 	let numberOfSubmenus = 0;
 	new MutationObserver(mutations => {
 		window.dispatchEvent(new CustomEvent('domChanged', { detail: mutations }));
@@ -87,6 +88,13 @@ export function startMutationObserver() {
 			menuOpened = false;
 			pluginOptionsFound = false;
 			window.dispatchEvent(new CustomEvent('menuClosed'));
+		}
+
+		if (document.getElementsByClassName('focus-target').length > 0 && !focusTargetFound) {
+			focusTargetFound = true;
+			window.dispatchEvent(
+				new CustomEvent('focusTargetFound', { detail: document.getElementsByClassName('focus-target')[0] })
+			);
 		}
 
 		if (document.getElementById('pluginOptions') && !pluginOptionsFound) {

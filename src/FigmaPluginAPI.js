@@ -87,18 +87,15 @@ export const FigmaPluginAPI = {
 		}
 	},
 	createKeyboardShortcut: (shortcut, triggerFunction) => {
-		document.querySelector('.focus-target').onkeydown = e => {
-			if (
-				e.metaKey !== !shortcut.command &&
-				e.shiftKey !== !shortcut.shift &&
-				e.ctrlKey !== !shortcut.control &&
-				e.altKey !== !shortcut.option &&
-				e.key.toLowerCase() === shortcut.key.toLowerCase()
-			) {
-				e.preventDefault();
-				triggerFunction();
-			}
-		};
+		if (document.getElementsByClassName('focus-target').length > 0) {
+			const focusTarget = document.getElementsByClassName('focus-target')[0];
+			addKeyboardShortcutInFile(focusTarget, shortcut, triggerFunction);
+		} else {
+			window.addEventListener('focusTargetFound', event => {
+				const focusTarget = event.detail;
+				addKeyboardShortcutInFile(focusTarget, shortcut, triggerFunction);
+			});
+		}
 	},
 	addTooltip: (element, tooltipText, showAfterDelay) => {
 		element.addEventListener('mousemove', () => {
@@ -225,6 +222,21 @@ const injectMenuItem = (menuType, isSubmenu, buttonLabel, triggerFunction, short
 			};
 		}
 	};
+};
+
+const addKeyboardShortcutInFile = (focusTarget, shortcut, triggerFunction) => {
+	focusTarget.addEventListener('keydown', e => {
+		if (
+			e.metaKey !== !shortcut.command &&
+			e.shiftKey !== !shortcut.shift &&
+			e.ctrlKey !== !shortcut.control &&
+			e.altKey !== !shortcut.option &&
+			e.key.toLowerCase() === shortcut.key.toLowerCase()
+		) {
+			e.preventDefault();
+			triggerFunction();
+		}
+	});
 };
 
 const injectPluginsMenuItem = (buttonLabel, triggerFunction, shortcut) => {
