@@ -3,30 +3,34 @@
 		modal(name='pluginManagerModal' ref='modal' @opened='openModal' @closed='modalClosed' draggable='.modal-header' width='460' height='auto' maxHeight='642')
 			.modal-header.header-large
 				.modal-tabs
-					.modal-tab(:class='{"active-tab": !installedScreenOn}' @click='installedScreenOn = false, detailScreenOn = false, searchText = ""') Plugins
-					.modal-tab(:class='{"active-tab": installedScreenOn}' @click='installedScreenOn = true, detailScreenOn = false, searchText = ""') Installed
+					.modal-tab(:class='{"active-tab": currentTab === "Plugins"}' @click='currentTab = "Plugins", detailScreenOn = false, searchText = ""') Plugins
+					.modal-tab(:class='{"active-tab": currentTab === "Installed"}' @click='currentTab = "Installed", detailScreenOn = false, searchText = ""') Installed
+					.modal-tab(:class='{"active-tab": currentTab === "Developer"}' @click='currentTab = "Developer", detailScreenOn = false, searchText = ""') Developer
 						.update-count(v-if='numberOfUpdates > 0') {{ numberOfUpdates }}
 				.modal-close-button(ref='closeButton' @click='hide')
 			.modal-content
-				.list-screen(v-if='!installedScreenOn || (installedScreenOn && installedPlugins.length > 0)' :class='{detailScreenOn: detailScreenOn}')
+				.list-screen(v-if='currentTab === "Plugins" || (currentTab === "Installed" && installedPlugins.length > 0)' :class='{detailScreenOn: detailScreenOn}')
 					.search-box
 						.figma-icon.search
 						input(v-model='searchText' placeholder='Search' spellcheck='false')
 					.plugins-list
-						pluginItem(type='text' v-for='plugin in searchedPlugins' :key='plugin.id' :plugin='plugin' :installedPlugins='installedPlugins' :installedScreenOn='installedScreenOn' @goToDetail='goToDetail' @install='install')
+						pluginItem(type='text' v-for='plugin in searchedPlugins' :key='plugin.id' :plugin='plugin' :installedPlugins='installedPlugins' :installedScreenOn='currentTab === "Installed"' @goToDetail='goToDetail' @install='install')
 						.no-search-results-message(v-if='searchedPlugins.length === 0 && searchText !== ""') No results for '{{ searchText }}'
 				detailScreen(:class='{detailScreenOn: detailScreenOn}' :plugin='selectedPlugin' :installed='installedPlugins.find(installedPlugin => installedPlugin.id === selectedPlugin.id) !== undefined' @backToList='detailScreenOn = false' @install='install' @uninstall='uninstall')
-				.empty-state(v-if='installedScreenOn && installedPlugins.length === 0') No plugins installed
+				developerScreen(v-if='currentTab === "Developer"')
+				.empty-state(v-if='currentTab === "Installed" && installedPlugins.length === 0') No plugins installed
 </template>
 
 <script>
 import PluginItem from './components/PluginItem';
 import DetailScreen from './components/DetailScreen';
+import DeveloperScreen from './components/DeveloperScreen';
 let masterList = require('../masterList.json');
 export default {
 	components: {
 		PluginItem,
-		DetailScreen
+		DetailScreen,
+		DeveloperScreen
 	},
 	data: () => ({
 		orgId: '',
@@ -36,6 +40,7 @@ export default {
 		selectedPlugin: {},
 		detailScreenOn: false,
 		installedScreenOn: false,
+		currentTab: 'Plugins',
 		plugins: [],
 		installedPlugins: []
 	}),
@@ -71,7 +76,7 @@ export default {
 			availablePlugins = availablePlugins.filter(plugin => {
 				return this.isDesktop ? !plugin.webOnly : !plugin.desktopOnly;
 			});
-			if (!this.installedScreenOn) {
+			if (this.currentTab === 'Plugins') {
 				return availablePlugins
 					.filter(plugin => {
 						return plugin.name.toLowerCase().match(this.searchText.toLowerCase());
@@ -115,7 +120,7 @@ export default {
 				document.getElementById('pluginManagerButton').classList.add('active');
 		},
 		modalClosed() {
-			this.installedScreenOn = false;
+			this.currentTab === 'Plugins';
 			this.modalOpened = false;
 			this.detailScreenOn = false;
 			if (document.getElementById('pluginManagerButton'))
@@ -202,7 +207,6 @@ export default {
 
 .plugins-list {
 	height: 546px;
-	max-height: -webkit-calc(70vh - 48px);
 	max-height: calc(70vh - 48px);
 	overflow-y: auto;
 }

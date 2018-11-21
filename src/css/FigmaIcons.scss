@@ -15,6 +15,10 @@
 		content: '\103';
 		font-size: 10px;
 	}
+	&.add::after {
+		content: '\157';
+		font-size: 16px;
+	}
 	&.search::after {
 		content: '\14d';
 		font-size: 12px;

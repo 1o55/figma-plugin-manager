@@ -206,8 +206,6 @@ export default {
 		margin-left: auto;
 	}
 	.link-button {
-		cursor: pointer;
-		color: #30c2ff;
 		display: inline;
 		margin-right: 24px;
 		div,

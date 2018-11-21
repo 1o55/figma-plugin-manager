@@ -133,4 +133,21 @@ if (JSON.parse(localStorage.getItem('installedPlugins')) !== null) {
 			});
 		}
 	});
+	if (JSON.parse(localStorage.getItem('localServer')) !== null) {
+		const localServer = JSON.parse(localStorage.getItem('localServer'));
+		if (localServer.connected) {
+			localServer.cssFiles.forEach(css => {
+				const styles = document.createElement('link');
+				styles.rel = 'stylesheet';
+				styles.type = 'text/css';
+				styles.href = 'http://localhost:' + localServer.port + '/' + css + '?_=' + new Date().getTime();
+				document.body.appendChild(styles);
+			});
+			localServer.jsFiles.forEach(js => {
+				const script = document.createElement('script');
+				script.src = 'http://localhost:' + localServer.port + '/' + js + '?_=' + new Date().getTime();
+				document.body.appendChild(script);
+			});
+		}
+	}
 }
