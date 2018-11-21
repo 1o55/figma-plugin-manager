@@ -9,8 +9,17 @@ document.head.appendChild(css);
 
 const vendors = document.createElement('script');
 vendors.src = chrome.extension.getURL('js/chunk-vendors.js');
-document.head.appendChild(vendors);
 
 const app = document.createElement('script');
 app.src = chrome.extension.getURL('js/app.js');
-document.head.appendChild(app);
+
+chrome.storage.local.get(['devMode'], function(result) {
+	if (result.devMode) {
+		const devModeScript = document.createElement('script');
+		devModeScript.innerHTML = `window.pluginDevMode = true;`;
+		document.head.appendChild(devModeScript);
+		console.log('Plugin Dev Mode On');
+	}
+	document.head.appendChild(vendors);
+	document.head.appendChild(app);
+});

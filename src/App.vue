@@ -5,7 +5,7 @@
 				.modal-tabs
 					.modal-tab(:class='{"active-tab": currentTab === "Plugins"}' @click='currentTab = "Plugins", detailScreenOn = false, searchText = ""') Plugins
 					.modal-tab(:class='{"active-tab": currentTab === "Installed"}' @click='currentTab = "Installed", detailScreenOn = false, searchText = ""') Installed
-					.modal-tab(:class='{"active-tab": currentTab === "Developer"}' @click='currentTab = "Developer", detailScreenOn = false, searchText = ""') Developer
+					.modal-tab(v-if='devMode' :class='{"active-tab": currentTab === "Developer"}' @click='currentTab = "Developer", detailScreenOn = false, searchText = ""') Developer
 						.update-count(v-if='numberOfUpdates > 0') {{ numberOfUpdates }}
 				.modal-close-button(ref='closeButton' @click='hide')
 			.modal-content
@@ -39,10 +39,10 @@ export default {
 		searchText: '',
 		selectedPlugin: {},
 		detailScreenOn: false,
-		installedScreenOn: false,
 		currentTab: 'Plugins',
 		plugins: [],
-		installedPlugins: []
+		installedPlugins: [],
+		devMode: window.pluginDevMode
 	}),
 	watch: {
 		installedPlugins: array => {
@@ -120,7 +120,7 @@ export default {
 				document.getElementById('pluginManagerButton').classList.add('active');
 		},
 		modalClosed() {
-			this.currentTab === 'Plugins';
+			this.currentTab = 'Plugins';
 			this.modalOpened = false;
 			this.detailScreenOn = false;
 			if (document.getElementById('pluginManagerButton'))
@@ -132,7 +132,7 @@ export default {
 		goToDetail(plugin) {
 			this.selectedPlugin = plugin;
 			document.querySelector('.detail-screen .content').scrollTop = 0;
-			if (this.installedScreenOn) {
+			if (this.currentTab === 'Installed') {
 				const updatedInstalledPlugins = this.installedPlugins.map(installedPlugin => {
 					return installedPlugin.id === plugin.id ? plugin : installedPlugin;
 				});

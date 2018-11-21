@@ -1,7 +1,7 @@
 <template lang="pug">
 	.developer-screen(@click='editing = ""')
 		.header
-			.title Developer server
+			.title Development server
 			button.button.primary(v-show='!connected' @click.stop='connected = true') Connect
 			button.button(v-show='connected' @click.stop='connected = false') Disconnect
 		.content

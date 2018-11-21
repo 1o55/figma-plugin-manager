@@ -3,12 +3,16 @@
 	"description": "Install and manage plugins in Figma",
 	"author": "jachui@microsoft.com",
 	"version": "1.0.3",
-	"permissions": ["declarativeContent"],
+	"permissions": ["declarativeContent", "storage"],
 	"manifest_version": 2,
 	"icons": {
 		"16": "icons/16.png",
 		"48": "icons/48.png",
 		"128": "icons/128.png"
+	},
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": false
 	},
 	"content_scripts": [
 		{
@@ -23,5 +27,5 @@
 			"js": ["js/contentScript.js"]
 		}
 	],
-	"web_accessible_resources": ["js/chunk-vendors.js", "js/app.js", "css/app.css"]
+	"web_accessible_resources": ["js/chunk-vendors.js", "js/app.js", "css/app.css", "options.js"]
 }
