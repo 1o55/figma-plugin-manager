@@ -117,7 +117,7 @@ FigmaPluginAPI.onMenuOpened(type => {
 	}
 });
 
-if (!window.__figmaDesktop) startMutationObserver();
+// if (!window.__figmaDesktop) startMutationObserver();
 
 if (JSON.parse(localStorage.getItem('installedPlugins')) !== null) {
 	const installedPlugins = JSON.parse(localStorage.getItem('installedPlugins'));
@@ -157,3 +157,5 @@ if (JSON.parse(localStorage.getItem('installedPlugins')) !== null) {
 		}
 	}
 }
+
+startMutationObserver();
