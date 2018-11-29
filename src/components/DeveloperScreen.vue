@@ -33,15 +33,23 @@
 						.path(v-if='editing !== "css" + index' @click.stop='editing = "css" + index') {{path}}
 						input.textbox.path-edit(type='text' spellcheck='false' placeholder="File path, e.g. css/app.css" ref='cssEdit' v-if='editing === "css" + index' @keyup.enter='editing = ""' @blur='changePath($event, "css", index)' @click.stop :value='path' @change='changePath($event, "css", index)')
 					a.link(@click='cssFiles.splice(index, 1)') Remove
+			.section.no-margin-bottom
+				.title Hash
+				.description Copy this to the Master List entry when you publish and update your plugin.
+				input.textbox.hash(type='text' v-model='hash' spellcheck='false' onClick='this.select()' placeholder='Connect to your development server to generate hash')
 </template>
 
 <script>
+import shajs from "sha.js";
+import axios from "axios";
+
 export default {
   data: () => ({
     connected: false,
     port: "8080",
     jsFiles: [],
     cssFiles: [],
+    hash: "",
     editing: ""
   }),
   mounted() {
@@ -51,12 +59,14 @@ export default {
       this.port = localServer.port;
       this.jsFiles = localServer.jsFiles;
       this.cssFiles = localServer.cssFiles;
+      this.hash = localServer.hash;
     } else {
       const localServer = {};
       localServer.connected = this.connected;
       localServer.port = this.port;
       localServer.jsFiles = this.jsFiles;
       localServer.cssFiles = this.cssFiles;
+      localServer.hash = "";
       localStorage.setItem("localServer", JSON.stringify(localServer));
     }
   },
@@ -198,13 +208,19 @@ export default {
     padding: 16px 24px;
   }
   .section {
-    margin-bottom: 40px;
+    margin-bottom: 32px;
     .title {
       margin-bottom: 12px;
     }
+    &.no-margin-bottom {
+      margin-bottom: 0;
+    }
   }
-  .port {
+  .textbox.port {
     width: 60px;
+    margin-top: 12px;
+  }
+  .textbox.hash {
     margin-top: 12px;
   }
 }
