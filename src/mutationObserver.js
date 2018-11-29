@@ -93,6 +93,9 @@ export function startMutationObserver() {
 		if (!window.App._state.dropdownShown && menuOpened) {
 			menuOpened = false;
 			pluginOptionsFound = false;
+			[...document.getElementsByClassName('plugin-dropdown-submenu')].forEach(submenu => {
+				submenu.parentNode.removeChild(submenu);
+			});
 			window.dispatchEvent(new CustomEvent('menuClosed'));
 		}
 

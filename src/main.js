@@ -143,6 +143,8 @@ if (installedPlugins !== null) {
 							eval(response.data);
 						});
 					} else {
+						console.log(`masterListHash: ${masterList.find(pluginEntry => pluginEntry.id === plugin.id).hash}`);
+						console.log(`loadedHash: ${loadedHash}`);
 						window.addEventListener('appLoaded', () => {
 							FigmaPluginAPI.showToast(`This version of "${plugin.name}" has not been approved and will not run.`, 3);
 						});

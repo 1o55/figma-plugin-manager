@@ -64,26 +64,47 @@ export const FigmaPluginAPI = {
 		});
 	},
 	createContextMenuItem: {
-		Selection: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuItem('DROPDOWN_TYPE_SELECTION_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
+		Selection: (buttonLabel, triggerFunction, condition, shortcut, subMenuItems) => {
+			addMenuItem(
+				'DROPDOWN_TYPE_SELECTION_CONTEXT_MENU',
+				buttonLabel,
+				triggerFunction,
+				condition,
+				shortcut,
+				subMenuItems
+			);
 		},
-		Canvas: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuItem('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
+		Canvas: (buttonLabel, triggerFunction, condition, shortcut, subMenuItems) => {
+			addMenuItem('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut, subMenuItems);
 		},
-		ObjectsPanel: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuItem('DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
+		ObjectsPanel: (buttonLabel, triggerFunction, condition, shortcut, subMenuItems) => {
+			addMenuItem(
+				'DROPDOWN_TYPE_OBJECTS_PANEL_CONTEXT_MENU',
+				buttonLabel,
+				triggerFunction,
+				condition,
+				shortcut,
+				subMenuItems
+			);
 		},
-		Page: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuItem('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
+		Page: (buttonLabel, triggerFunction, condition, shortcut, subMenuItems) => {
+			addMenuItem('DROPDOWN_TYPE_PAGE_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut, subMenuItems);
 		},
-		Filename: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuItem('FULLSCREEN_FILENAME_DROPDOWN', buttonLabel, triggerFunction, condition, shortcut);
+		Filename: (buttonLabel, triggerFunction, condition, shortcut, subMenuItems) => {
+			addMenuItem('FULLSCREEN_FILENAME_DROPDOWN', buttonLabel, triggerFunction, condition, shortcut, subMenuItems);
 		},
-		Version: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuItem('DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU', buttonLabel, triggerFunction, condition, shortcut);
+		Version: (buttonLabel, triggerFunction, condition, shortcut, subMenuItems) => {
+			addMenuItem(
+				'DROPDOWN_TYPE_SAVEPOINT_CONTEXT_MENU',
+				buttonLabel,
+				triggerFunction,
+				condition,
+				shortcut,
+				subMenuItems
+			);
 		},
-		File: (buttonLabel, triggerFunction, condition, shortcut) => {
-			addMenuItem('file-actions-dropdown', buttonLabel, triggerFunction, condition, shortcut);
+		File: (buttonLabel, triggerFunction, condition, shortcut, subMenuItems) => {
+			addMenuItem('file-actions-dropdown', buttonLabel, triggerFunction, condition, shortcut, subMenuItems);
 		}
 	},
 	createKeyboardShortcut: (shortcut, triggerFunction) => {
@@ -159,15 +180,15 @@ export const FigmaPluginAPI = {
 	}
 };
 
-const addMenuItem = (menuType, buttonLabel, triggerFunction, condition, shortcut) => {
+const addMenuItem = (menuType, buttonLabel, triggerFunction, condition, shortcut, subMenuItems) => {
 	FigmaPluginAPI.onMenuOpened((type, hasMoreOptions) => {
 		if (type === menuType) {
 			if (typeof condition === 'function') {
 				if (condition()) {
-					if (!hasMoreOptions) injectMenuItem(menuType, false, buttonLabel, triggerFunction, shortcut);
+					if (!hasMoreOptions) injectMenuItem(menuType, false, buttonLabel, triggerFunction, shortcut, subMenuItems);
 				}
 			} else {
-				if (!hasMoreOptions) injectMenuItem(menuType, false, buttonLabel, triggerFunction, shortcut);
+				if (!hasMoreOptions) injectMenuItem(menuType, false, buttonLabel, triggerFunction, shortcut, subMenuItems);
 			}
 		}
 	});
@@ -175,16 +196,18 @@ const addMenuItem = (menuType, buttonLabel, triggerFunction, condition, shortcut
 		if (type === menuType) {
 			if (typeof condition === 'function') {
 				if (condition()) {
-					if (highlightedOption === 'More') injectMenuItem(menuType, true, buttonLabel, triggerFunction, shortcut);
+					if (highlightedOption === 'More')
+						injectMenuItem(menuType, true, buttonLabel, triggerFunction, shortcut, subMenuItems);
 				}
 			} else {
-				if (highlightedOption === 'More') injectMenuItem(menuType, true, buttonLabel, triggerFunction, shortcut);
+				if (highlightedOption === 'More')
+					injectMenuItem(menuType, true, buttonLabel, triggerFunction, shortcut, subMenuItems);
 			}
 		}
 	});
 };
 
-const injectMenuItem = (menuType, isSubmenu, buttonLabel, triggerFunction, shortcut) => {
+const injectMenuItem = (menuType, isSubmenu, buttonLabel, triggerFunction, shortcut, subMenuItems) => {
 	const isFatDropdown = menuType === 'FULLSCREEN_FILENAME_DROPDOWN' || menuType === 'file-actions-dropdown';
 	const menu = isSubmenu
 		? document.querySelector('div[class*="multilevel_dropdown--menu--"]')
@@ -196,7 +219,7 @@ const injectMenuItem = (menuType, isSubmenu, buttonLabel, triggerFunction, short
 	labelDiv.className = 'plugin-dropdown-option-text';
 	labelDiv.innerText = buttonLabel;
 	newMenuItem.appendChild(labelDiv);
-	if (shortcut) {
+	if (shortcut && subMenuItems) {
 		let shortcutText = '';
 		shortcutText += shortcut.control ? '⌃' : '';
 		shortcutText += shortcut.option ? '⌥' : '';
@@ -210,37 +233,109 @@ const injectMenuItem = (menuType, isSubmenu, buttonLabel, triggerFunction, short
 			newMenuItem.appendChild(shortcutDiv);
 		}
 	}
+	if (subMenuItems) {
+		const chevronDiv = document.createElement('div');
+		chevronDiv.className = 'plugin-dropdown-option-chevron';
+		newMenuItem.appendChild(chevronDiv);
+		const pluginSubmenu = document.createElement('div');
+		pluginSubmenu.className = 'plugin-dropdown-submenu';
+		pluginSubmenu.style.display = 'none';
+		subMenuItems.forEach(subMenuItem => {
+			const item = document.createElement('div');
+			item.className = 'plugin-dropdown-option';
+			const labelDiv = document.createElement('div');
+			labelDiv.className = 'plugin-dropdown-option-text';
+			labelDiv.innerText = subMenuItem.buttonLabel;
+			item.appendChild(labelDiv);
+			if (subMenuItem.shortcut) {
+				let shortcutText = '';
+				shortcutText += subMenuItem.shortcut.control ? '⌃' : '';
+				shortcutText += subMenuItem.shortcut.option ? '⌥' : '';
+				shortcutText += subMenuItem.shortcut.shift ? '⇧' : '';
+				shortcutText += subMenuItem.shortcut.command ? '⌘' : '';
+				shortcutText += subMenuItem.shortcut.key ? subMenuItem.shortcut.key.toUpperCase() : '';
+				if (shortcutText !== '') {
+					const shortcutDiv = document.createElement('div');
+					shortcutDiv.className = 'plugin-dropdown-option-shortcut';
+					shortcutDiv.innerText = shortcutText;
+					item.appendChild(shortcutDiv);
+				}
+			}
+			item.onclick = () => {
+				subMenuItem.triggerFunction();
+				window.App._dispatch({ type: 'HIDE_DROPDOWN' });
+			};
+			if (typeof subMenuItem.condition === 'function') {
+				if (subMenuItem.condition()) {
+					pluginSubmenu.appendChild(item);
+				}
+			} else pluginSubmenu.appendChild(item);
+		});
+		document.querySelector('div[class*="dropdown--dropdown--"]').parentElement.parentElement.appendChild(pluginSubmenu);
+		newMenuItem.onclick = e => {
+			e.preventDefault(), e.stopPropagation();
+		};
+		newMenuItem.onmouseover = e => {
+			e.stopPropagation();
+			newMenuItem.style.backgroundColor = '#30c2ff';
+			const submenu = document.querySelector('div[class*="multilevel_dropdown--menu"]');
+			if (submenu) {
+				submenu.style.display = 'none';
+			}
+			const activeNode = document.querySelector('div[class*="multilevel_dropdown--optionActive"]');
+			if (activeNode) {
+				const activeClassName = [...activeNode.classList].find(className => className.includes('optionActive'));
+				activeNode.classList.remove(activeClassName);
+				activeNode.onmouseover = e => {
+					if (submenu) {
+						submenu.style.display = '';
+					}
+					activeNode.classList.add(activeClassName);
+				};
+			}
+			pluginSubmenu.style.top = `${newMenuItem.getBoundingClientRect().top - 6}px`;
+			if (window.innerWidth - newMenuItem.getBoundingClientRect().right > 200)
+				pluginSubmenu.style.left = `${newMenuItem.getBoundingClientRect().right}px`;
+			else pluginSubmenu.style.left = `${newMenuItem.getBoundingClientRect().left - 200}px`;
+			pluginSubmenu.style.display = 'block';
+		};
+		document.querySelector('div[class*="dropdown--dropdown--"]').onmouseover = () => {
+			pluginSubmenu.style.display = 'none';
+			newMenuItem.style.backgroundColor = '';
+		};
+	} else {
+		newMenuItem.onclick = () => {
+			triggerFunction();
+			window.App._dispatch({ type: 'HIDE_DROPDOWN' });
+		};
+		newMenuItem.onmouseover = () => {
+			const submenu = isSubmenu
+				? document.querySelectorAll('div[class*="multilevel_dropdown--menu"]')[1]
+				: document.querySelector('div[class*="multilevel_dropdown--menu"]');
+			if (submenu) {
+				submenu.style.display = 'none';
+			}
+			const activeNode = isSubmenu
+				? document.querySelectorAll('div[class*="multilevel_dropdown--optionActive"]')[1]
+				: document.querySelector('div[class*="multilevel_dropdown--optionActive"]');
+			if (activeNode) {
+				const activeClassName = [...activeNode.classList].find(className => className.includes('optionActive'));
+				activeNode.classList.remove(activeClassName);
+				activeNode.onmouseover = e => {
+					if (submenu) {
+						submenu.style.display = '';
+					}
+					activeNode.classList.add(activeClassName);
+				};
+			}
+		};
+	}
 	menu.appendChild(newMenuItem);
 	const numberOfSeparators = [...menu.children].filter(node => node.className.includes('dropdown--separator')).length;
 	if (!isFatDropdown)
 		menu.style.top = isSubmenu
 			? `${parseInt(menu.style.top) - 24 - numberOfSeparators * 2}px`
 			: `${parseInt(menu.style.top) - 24}px`;
-	newMenuItem.onclick = () => {
-		triggerFunction();
-		window.App._dispatch({ type: 'HIDE_DROPDOWN' });
-	};
-	newMenuItem.onmouseover = () => {
-		const submenu = isSubmenu
-			? document.querySelectorAll('div[class*="multilevel_dropdown--menu"]')[1]
-			: document.querySelector('div[class*="multilevel_dropdown--menu"]');
-		if (submenu) {
-			submenu.style.display = 'none';
-		}
-		const activeNode = isSubmenu
-			? document.querySelectorAll('div[class*="multilevel_dropdown--optionActive"]')[1]
-			: document.querySelector('div[class*="multilevel_dropdown--optionActive"]');
-		if (activeNode) {
-			const activeClassName = [...activeNode.classList].find(className => className.includes('optionActive'));
-			activeNode.classList.remove(activeClassName);
-			activeNode.onmouseover = e => {
-				if (submenu) {
-					submenu.style.display = '';
-				}
-				activeNode.classList.add(activeClassName);
-			};
-		}
-	};
 };
 
 const addKeyboardShortcutInFile = (focusTarget, shortcut, triggerFunction) => {
