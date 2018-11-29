@@ -1,4 +1,5 @@
 export function startMutationObserver() {
+	let appLoaded = false;
 	let fileBrowserLoaded = false;
 	let fileLoaded = false;
 	let modalOpened = false;
@@ -11,6 +12,11 @@ export function startMutationObserver() {
 		if (document.getElementsByClassName('nav-12').length > 0 && !fileBrowserLoaded) {
 			fileBrowserLoaded = true;
 			window.dispatchEvent(new CustomEvent('fileBrowserLoaded'));
+		}
+
+		if (window.App !== undefined && !appLoaded) {
+			appLoaded = true;
+			window.dispatchEvent(new CustomEvent('appLoaded'));
 		}
 
 		if (

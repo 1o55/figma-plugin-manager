@@ -143,7 +143,9 @@ if (installedPlugins !== null) {
 							eval(response.data);
 						});
 					} else {
-						FigmaPluginAPI.showToast(`This version of ${plugin.name} has not been approved and will not run.`, 5);
+						window.addEventListener('appLoaded', () => {
+							FigmaPluginAPI.showToast(`This version of "${plugin.name}" has not been approved and will not run.`, 3);
+						});
 					}
 				})
 			);
