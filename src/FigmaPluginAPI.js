@@ -114,6 +114,25 @@ export const FigmaPluginAPI = {
 			if (window.App._state.tooltip.state === 1) window.App._dispatch({ type: 'TOOLTIP_HIDE' });
 		});
 	},
+	showToast: (message, timeoutInSeconds, buttonText, buttonAction) => {
+		const toast = {
+			type: 'VISUAL_BELL_ENQUEUE',
+			payload: {
+				type: 'installed_plugin',
+				message: message,
+				timeout: timeoutInSeconds ? timeoutInSeconds * 1000 : 3000
+			}
+		};
+		buttonText && buttonAction
+			? Object.assign(toast.payload, {
+					button: {
+						text: buttonText,
+						action: buttonAction
+					}
+			  })
+			: null;
+		window.App._dispatch(toast);
+	},
 	forEachSelectedNode: triggerFunction => {
 		const selectedNodes = Object.keys(App._state.mirror.sceneGraphSelection);
 		for (let i = 0; i < selectedNodes.length; i++) {

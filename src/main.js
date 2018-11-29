@@ -4,13 +4,11 @@ import Vue from 'vue';
 import App from './App.vue';
 import VModal from 'vue-js-modal';
 import shajs from 'sha.js';
+import axios from 'axios';
+let masterList = require('../masterList.json');
+
 Vue.config.productionTip = false;
 Vue.use(VModal);
-console.log(
-	shajs('sha256')
-		.update('abc')
-		.digest('hex')
-);
 
 window.figmaPlugin = FigmaPluginAPI;
 window.vue = Vue;
@@ -117,10 +115,8 @@ FigmaPluginAPI.onMenuOpened(type => {
 	}
 });
 
-// if (!window.__figmaDesktop) startMutationObserver();
-
-if (JSON.parse(localStorage.getItem('installedPlugins')) !== null) {
-	const installedPlugins = JSON.parse(localStorage.getItem('installedPlugins'));
+const installedPlugins = JSON.parse(localStorage.getItem('installedPlugins'));
+if (installedPlugins !== null) {
 	installedPlugins.forEach(plugin => {
 		if (plugin.css) {
 			plugin.css.forEach(css => {
@@ -132,11 +128,25 @@ if (JSON.parse(localStorage.getItem('installedPlugins')) !== null) {
 			});
 		}
 		if (plugin.js) {
+			const promises = [];
 			plugin.js.forEach(js => {
-				const script = document.createElement('script');
-				script.src = js + '?_=' + new Date().getTime();
-				document.body.appendChild(script);
+				promises.push(axios.get(js + '?_=' + new Date().getTime()));
 			});
+			axios.all(promises).then(
+				axios.spread((...args) => {
+					const scripts = args.map(response => response.data);
+					const loadedHash = shajs('sha256')
+						.update(scripts.join())
+						.digest('hex');
+					if (loadedHash === masterList.find(pluginEntry => pluginEntry.id === plugin.id).hash) {
+						args.forEach(response => {
+							eval(response.data);
+						});
+					} else {
+						FigmaPluginAPI.showToast(`This version of ${plugin.name} has not been approved and will not run.`, 5);
+					}
+				})
+			);
 		}
 	});
 	if (JSON.parse(localStorage.getItem('localServer')) !== null) {
