@@ -27,7 +27,7 @@ export function startMutationObserver() {
 			window.dispatchEvent(new CustomEvent('fileBrowserChanged'));
 		}
 
-		if (document.querySelector('div[class*="nav-"]') && fileBrowserLoaded) {
+		if (!document.querySelector('div[class*="nav-"]') && fileBrowserLoaded) {
 			fileBrowserLoaded = false;
 			window.dispatchEvent(new CustomEvent('fileBrowserUnloaded'));
 		}
