@@ -261,7 +261,7 @@ export default {
     margin-left: auto;
   }
   .path,
-  .path-edit {
+  .textbox.path-edit {
     width: 200px;
   }
   .path {

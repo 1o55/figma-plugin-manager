@@ -11,7 +11,7 @@ Vue.config.productionTip = false;
 Vue.use(VModal);
 
 window.figmaPlugin = FigmaPluginAPI;
-window.Vue = Vue;
+window.vue = Vue;
 const app = document.createElement('div');
 app.id = 'pluginManagerApp';
 document.body.appendChild(app);

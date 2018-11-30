@@ -11,7 +11,6 @@ export function startMutationObserver() {
 		window.dispatchEvent(new CustomEvent('domChanged', { detail: mutations }));
 		if (document.querySelector('div[class*="nav-"]') && !fileBrowserLoaded) {
 			fileBrowserLoaded = true;
-			console.log('browserLoaded');
 			window.dispatchEvent(new CustomEvent('fileBrowserLoaded'));
 		}
 
@@ -25,13 +24,11 @@ export function startMutationObserver() {
 			document.querySelector('div[class*="nav-"]') &&
 			fileBrowserLoaded
 		) {
-			console.log('browserChanged');
 			window.dispatchEvent(new CustomEvent('fileBrowserChanged'));
 		}
 
 		if (document.querySelector('div[class*="nav-"]') && fileBrowserLoaded) {
 			fileBrowserLoaded = false;
-			console.log('browserUnloaded');
 			window.dispatchEvent(new CustomEvent('fileBrowserUnloaded'));
 		}
 
