@@ -278,7 +278,10 @@ const injectMenuItem = (menuType, isSubmenu, itemLabel, triggerFunction, shortcu
 		};
 		newMenuItem.onmouseover = e => {
 			e.stopPropagation();
-			newMenuItem.style.backgroundColor = '#30c2ff';
+			[...document.getElementById('pluginOptions').children].forEach(item => {
+				item.style.backgroundColor = '';
+			});
+			// newMenuItem.style.backgroundColor = '#30c2ff';
 			const submenu = document.querySelector('div[class*="multilevel_dropdown--menu"]');
 			if (submenu) {
 				submenu.style.display = 'none';
@@ -299,11 +302,14 @@ const injectMenuItem = (menuType, isSubmenu, itemLabel, triggerFunction, shortcu
 				pluginSubmenu.style.left = `${newMenuItem.getBoundingClientRect().right}px`;
 			else pluginSubmenu.style.left = `${newMenuItem.getBoundingClientRect().left - 200}px`;
 			pluginSubmenu.style.display = 'block';
+			pluginSubmenu.onmouseover = () => {
+				newMenuItem.style.backgroundColor = '#30c2ff';
+			};
 		};
-		document.querySelector('div[class*="dropdown--dropdown--"]').onmouseover = () => {
+		document.querySelector('div[class*="dropdown--dropdown--"]').addEventListener('mouseover', () => {
 			pluginSubmenu.style.display = 'none';
 			newMenuItem.style.backgroundColor = '';
-		};
+		});
 	} else {
 		newMenuItem.onclick = () => {
 			triggerFunction();
@@ -328,6 +334,10 @@ const injectMenuItem = (menuType, isSubmenu, itemLabel, triggerFunction, shortcu
 					}
 					activeNode.classList.add(activeClassName);
 				};
+			}
+			if ((menuType = 'file-actions-dropdown')) {
+				const pluginSubmenu = document.getElementsByClassName('plugin-dropdown-submenu')[1];
+				if (pluginSubmenu) pluginSubmenu.style.display = 'none';
 			}
 		};
 	}

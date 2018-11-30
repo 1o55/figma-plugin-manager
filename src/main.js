@@ -108,10 +108,10 @@ FigmaPluginAPI.onMenuOpened(type => {
 			pluginSubmenu.style.left = `${pluginMenuOption.getBoundingClientRect().right}px`;
 			pluginSubmenu.style.display = 'block';
 		};
-		document.querySelector('div[class*="dropdown--dropdown--"]').onmouseover = () => {
+		document.querySelector('div[class*="dropdown--dropdown--"]').addEventListener('mouseover', () => {
 			pluginSubmenu.style.display = 'none';
 			pluginMenuOption.style.backgroundColor = '';
-		};
+		});
 	}
 });
 
