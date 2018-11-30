@@ -281,7 +281,6 @@ const injectMenuItem = (menuType, isSubmenu, itemLabel, triggerFunction, shortcu
 			[...document.getElementById('pluginOptions').children].forEach(item => {
 				item.style.backgroundColor = '';
 			});
-			// newMenuItem.style.backgroundColor = '#30c2ff';
 			const submenu = document.querySelector('div[class*="multilevel_dropdown--menu"]');
 			if (submenu) {
 				submenu.style.display = 'none';
