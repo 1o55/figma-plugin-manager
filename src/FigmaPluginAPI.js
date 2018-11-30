@@ -341,6 +341,13 @@ const injectMenuItem = (menuType, isSubmenu, itemLabel, triggerFunction, shortcu
 		};
 	}
 	menu.appendChild(newMenuItem);
+	if (menuType === 'fullscreen-menu-dropdown') {
+		if (menu.style.borderBottom === '') {
+			menu.style.borderBottom = '1px solid #2c2c2c';
+			menu.style.paddingBottom = '6px';
+			menu.style.marginBottom = '6px';
+		}
+	}
 	const numberOfSeparators = [...menu.children].filter(node => node.className.includes('dropdown--separator')).length;
 	if (!isFatDropdown)
 		menu.style.top = isSubmenu
