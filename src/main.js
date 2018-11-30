@@ -47,6 +47,8 @@ FigmaPluginAPI.onFileBrowserUnloaded(() => {
 	vue.$children[0].hide();
 });
 
+FigmaPluginAPI.createKeyboardShortcut({ shift: true, command: true, key: 'P' }, vue.$children[0].toggleModal);
+
 if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null) {
 	if (document.querySelector('#pluginManagerButton') === null) injectpluginManagerButton();
 }
@@ -79,6 +81,10 @@ FigmaPluginAPI.onMenuOpened(type => {
 		managePluginButtonLabel.className = 'plugin-dropdown-option-text';
 		managePluginButtonLabel.innerText = 'Manage Plugins';
 		managePluginButton.appendChild(managePluginButtonLabel);
+		const managePluginButtonShortcut = document.createElement('div');
+		managePluginButtonShortcut.className = 'plugin-dropdown-option-shortcut';
+		managePluginButtonShortcut.innerText = '⇧⌘P';
+		managePluginButton.appendChild(managePluginButtonShortcut);
 		pluginSubmenu.appendChild(pluginOptions);
 		pluginSubmenu.appendChild(managePluginButton);
 		pluginSubmenu.style.display = 'none';
