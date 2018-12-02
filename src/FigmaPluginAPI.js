@@ -278,9 +278,10 @@ const injectMenuItem = (menuType, isSubmenu, itemLabel, triggerFunction, shortcu
 		};
 		newMenuItem.onmouseover = e => {
 			e.stopPropagation();
-			[...document.getElementById('pluginOptions').children].forEach(item => {
-				item.style.backgroundColor = '';
-			});
+			if (document.getElementById('pluginOptions'))
+				[...document.getElementById('pluginOptions').children].forEach(item => {
+					item.style.backgroundColor = '';
+				});
 			const submenu = document.querySelector('div[class*="multilevel_dropdown--menu"]');
 			if (submenu) {
 				submenu.style.display = 'none';
