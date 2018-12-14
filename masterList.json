@@ -22,5 +22,11 @@
 		"publishDate": "11/18/2018",
 		"hash": "60c021156c4b8e1e5c1a276850db75d2cd930ea8f76202e7eccb4e8da5af2fa2",
 		"manifest": "https://jachui.github.io/figma-open-in-desktop/manifest.json"
+	},
+	{
+		"id": "figma-content-generator-plugin",
+		"publishDate": "12/14/2018",
+		"hash": "03ca1af9cd7c477a0ab4e6d5c64e28659bd9bed9bf9e952bd1d042403566d976",
+		"manifest": "https://cdes.github.io/figma-content-generator-plugin/manifest.json"
 	}
 ]
