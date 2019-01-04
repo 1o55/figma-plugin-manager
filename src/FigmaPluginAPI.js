@@ -278,6 +278,12 @@ const injectMenuItem = (menuType, isSubmenu, itemLabel, triggerFunction, shortcu
 		};
 		newMenuItem.onmouseover = e => {
 			e.stopPropagation();
+			const allSubmenus = [...document.getElementsByClassName('plugin-dropdown-submenu')].filter(
+				thisSubmenu => thisSubmenu.id !== 'pluginSubmenu'
+			);
+			allSubmenus.forEach(thisSubmenu => {
+				thisSubmenu.style.display = 'none';
+			});
 			if (document.getElementById('pluginOptions'))
 				[...document.getElementById('pluginOptions').children].forEach(item => {
 					item.style.backgroundColor = '';
@@ -316,6 +322,12 @@ const injectMenuItem = (menuType, isSubmenu, itemLabel, triggerFunction, shortcu
 			window.App._dispatch({ type: 'HIDE_DROPDOWN' });
 		};
 		newMenuItem.onmouseover = () => {
+			const allSubmenus = [...document.getElementsByClassName('plugin-dropdown-submenu')].filter(
+				thisSubmenu => thisSubmenu.id !== 'pluginSubmenu'
+			);
+			allSubmenus.forEach(thisSubmenu => {
+				thisSubmenu.style.display = 'none';
+			});
 			const submenu = isSubmenu
 				? document.querySelectorAll('div[class*="multilevel_dropdown--menu"]')[1]
 				: document.querySelector('div[class*="multilevel_dropdown--menu"]');
