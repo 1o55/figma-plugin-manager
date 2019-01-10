@@ -20,9 +20,8 @@
       <li><a href="https://figmaplugins.io/docs/figma-api/">And more!</a></li>
     </ul>
   </li>
-  <li>Discover new community created plugins..</li>
+  <li>Discover new community created plugins.</li>
   <li>or easily create your own plugin.</li>
-  <li>Code formatting with Prettier</li>
 </ul>
 
 ## Installation
