@@ -26,6 +26,10 @@ import PluginItem from "./components/PluginItem";
 import DetailScreen from "./components/DetailScreen";
 import DeveloperScreen from "./components/DeveloperScreen";
 
+function isLocalChromeExtension() {
+  return typeof chrome !== 'undefined' && typeof chrome.runtime.getManifest !== 'undefined' && !('update_url' in chrome.runtime.getManifest());
+}
+
 export default {
   components: {
     PluginItem,
@@ -74,7 +78,7 @@ export default {
       }
 
 
-      if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
+      if (isLocalChromeExtension()) {
         const masterListJSON = require('../masterList.json');
         localStorage.setItem("masterList", masterListJSON);
         loadPlugins(masterListJSON);

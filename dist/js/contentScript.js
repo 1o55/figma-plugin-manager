@@ -11,11 +11,11 @@ const vendors = document.createElement('script');
 
 const app = document.createElement('script');
 
-function isDevMode() {
+function isLocalChromeExtension() {
 	return !('update_url' in chrome.runtime.getManifest());
 }
 
-if (isDevMode()) {
+if (isLocalChromeExtension()) {
 	vendors.src = chrome.extension.getURL('js/chunk-vendors.js');
 	app.src = chrome.extension.getURL('js/app.js');
 }
