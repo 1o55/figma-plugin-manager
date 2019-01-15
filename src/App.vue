@@ -76,6 +76,7 @@ export default {
 
       if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
         const masterListJSON = require('../masterList.json');
+        localStorage.setItem("masterList", masterListJSON);
         loadPlugins(masterListJSON);
       }
       else {
