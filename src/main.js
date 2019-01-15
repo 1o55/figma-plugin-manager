@@ -5,7 +5,8 @@ import App from './App.vue';
 import VModal from 'vue-js-modal';
 import shajs from 'sha.js';
 import axios from 'axios';
-let masterList = require('../masterList.json');
+
+let masterList = JSON.parse(localStorage.getItem("masterList"));
 
 Vue.config.productionTip = false;
 Vue.use(VModal);

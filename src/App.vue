@@ -25,7 +25,7 @@
 import PluginItem from "./components/PluginItem";
 import DetailScreen from "./components/DetailScreen";
 import DeveloperScreen from "./components/DeveloperScreen";
-let masterList = require("../masterList.json");
+
 export default {
   components: {
     PluginItem,
@@ -56,19 +56,45 @@ export default {
         localStorage.getItem("installedPlugins")
       );
     } else localStorage.setItem("installedPlugins", JSON.stringify([]));
-    masterList.forEach(pluginEntry => {
-      const pluginRequest = new XMLHttpRequest();
-      pluginRequest.onload = () => {
-        const plugin = JSON.parse(pluginRequest.responseText);
-        plugin.publishDate = pluginEntry.publishDate;
-        self.plugins.push(plugin);
-      };
-      pluginRequest.open(
-        "GET",
-        pluginEntry.manifest + "?_=" + new Date().getTime()
-      );
-      pluginRequest.send();
-    });
+
+      const loadPlugins = (masterList) => {
+        masterList.forEach(pluginEntry => {
+          const pluginRequest = new XMLHttpRequest();
+          pluginRequest.onload = () => {
+            const plugin = JSON.parse(pluginRequest.responseText);
+            plugin.publishDate = pluginEntry.publishDate;
+            self.plugins.push(plugin);
+          };
+          pluginRequest.open(
+            "GET",
+            pluginEntry.manifest + "?_=" + new Date().getTime()
+          );
+          pluginRequest.send();
+        });
+      }
+
+
+      if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
+        const masterListJSON = require('../masterList.json');
+        loadPlugins(masterListJSON);
+      }
+      else {
+        const masterListUrl = 'https://jachui.github.io/figma-plugin-manager/masterList.json';
+        const masterListRequest = new XMLHttpRequest();
+        masterListRequest.open(
+          "GET",
+          masterListUrl + "?_=" + new Date().getTime()
+        );
+
+        masterListRequest.onload = () => {
+          const masterListJSON = JSON.parse(masterListRequest.responseText);
+          localStorage.setItem("masterList", masterListRequest.responseText);
+          loadPlugins(masterListJSON);
+        };
+
+        masterListRequest.send();
+      }
+
   },
   computed: {
     searchedPlugins() {
