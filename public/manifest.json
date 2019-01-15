@@ -1,5 +1,5 @@
 {
-	"name": "Figma Plugin Manager",
+	"name": "Figma Plugin Manager (Local)",
 	"description": "Install and manage plugins in Figma",
 	"author": "jachui@microsoft.com",
 	"version": "1.0.6",
