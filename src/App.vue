@@ -27,7 +27,7 @@ import DetailScreen from "./components/DetailScreen";
 import DeveloperScreen from "./components/DeveloperScreen";
 
 function isLocalChromeExtension() {
-  return typeof chrome !== 'undefined' && typeof chrome.runtime.getManifest !== 'undefined' && !('update_url' in chrome.runtime.getManifest());
+  return window.localExtension;
 }
 
 export default {
@@ -79,8 +79,9 @@ export default {
 
 
       if (isLocalChromeExtension()) {
+        console.log("Using local masterList.json");
         const masterListJSON = require('../masterList.json');
-        localStorage.setItem("masterList", masterListJSON);
+        localStorage.setItem("masterList", JSON.stringify(masterListJSON));
         loadPlugins(masterListJSON);
       }
       else {
