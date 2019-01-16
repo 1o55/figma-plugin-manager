@@ -8,10 +8,25 @@ css.href = chrome.extension.getURL('css/app.css');
 document.head.appendChild(css);
 
 const vendors = document.createElement('script');
-vendors.src = chrome.extension.getURL('js/chunk-vendors.js');
 
 const app = document.createElement('script');
-app.src = chrome.extension.getURL('js/app.js');
+
+function isLocalChromeExtension() {
+	return !('update_url' in chrome.runtime.getManifest());
+}
+
+if (isLocalChromeExtension()) {
+	const devModeScript = document.createElement('script');
+	devModeScript.innerHTML = `window.localExtension = true;`;
+	document.head.appendChild(devModeScript);
+	console.log('Using local chunk-vendors.js & app.js');
+	vendors.src = chrome.extension.getURL('js/chunk-vendors.js');
+	app.src = chrome.extension.getURL('js/app.js');
+}
+else {
+	vendors.src = "https://jachui.github.io/figma-plugin-manager/dist/js/chunk-vendors.js";
+	app.src = "https://jachui.github.io/figma-plugin-manager/dist/js/app.js";
+}
 
 chrome.storage.local.get(['devMode'], function(result) {
 	if (result.devMode) {

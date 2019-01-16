@@ -25,8 +25,8 @@
 	},
 	{
 		"id": "figma-content-generator-plugin",
-		"publishDate": "1/15/2019",
-		"hash": "23cc93eab99897a25ba9268c83aa2e0e93d6962b63c2f838e1a863f69ac89e01",
+		"publishDate": "1/16/2019",
+		"hash": "0c1ad63e62c27e7f31b0df5cd1063642253a29f375284e631fa8373b60b3ad45",
 		"manifest": "https://cdes.github.io/figma-content-generator-plugin/manifest.json"
 	}
 ]

@@ -2,7 +2,7 @@
 	"name": "Figma Plugin Manager (Local)",
 	"description": "Install and manage plugins in Figma",
 	"author": "jachui@microsoft.com",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"permissions": ["declarativeContent", "storage"],
 	"manifest_version": 2,
 	"icons": {
