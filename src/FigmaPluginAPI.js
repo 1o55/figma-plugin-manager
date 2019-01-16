@@ -371,18 +371,6 @@ const addKeyboardShortcutInFile = (focusTarget, shortcut, triggerFunction) => {
 
 const getNode = node => {
 	const sceneNode = App._state.mirror.sceneGraph.get(node);
-	const childrenGetter = sceneNode.__lookupGetter__('children');
-	Object.defineProperties(sceneNode.__proto__, {
-		children: {
-			get: childrenGetter,
-			set: function(val) {
-				Object.defineProperty(this, 'children', { value: val, writable: true });
-			}
-		}
-	});
-	sceneNode.children = sceneNode.children.map(child => {
-		return getNode(child);
-	});
 	const newNode = { id: sceneNode.guid, type: sceneNode.type };
 	if (sceneNode.parent) {
 		Object.defineProperty(newNode, 'parent', {
@@ -430,7 +418,11 @@ const getNode = node => {
 		}
 	});
 	if (sceneNode.children.length !== 0) {
-		newNode.children = sceneNode.children;
+		Object.defineProperty(newNode, 'children', {
+			value: sceneNode.children.map(child => {
+				return getNode(child);
+			})
+		});
 	}
 	if (!(sceneNode.type === 'DOCUMENT' || sceneNode.type === 'CANVAS')) {
 		const moreInfo = App.sendMessage('inspectNodeForInteractionTests', { nodeId: sceneNode.guid }).args;
@@ -506,8 +498,10 @@ const getNode = node => {
 								return { horizontal: result.horizontalConstraint, vertical: result.verticalConstraint };
 							},
 							set: function(val) {
-								App.updateSelectionProperties({ horizontalConstraint: val.horizontal });
-								App.updateSelectionProperties({ verticalConstraint: val.vertical });
+								App.updateSelectionProperties({
+									horizontalConstraint: val.horizontal,
+									verticalConstraint: val.vertical
+								});
 							}
 						},
 						x: {
@@ -646,9 +640,11 @@ const getNode = node => {
 									};
 								},
 								set: function(val) {
-									App.updateSelectionProperties({ arcStart: startingAngle });
-									App.updateSelectionProperties({ arcSweep: endingAngle });
-									App.updateSelectionProperties({ arcRadius: innerRadius });
+									App.updateSelectionProperties({
+										arcStart: val.startingAngle,
+										arcSweep: val.endingAngle,
+										arcRadius: val.innerRadius
+									});
 								}
 							});
 							break;
