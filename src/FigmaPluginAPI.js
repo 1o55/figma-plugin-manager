@@ -1,4 +1,4 @@
-import { getNode, scene } from './scene.js';
+import { scene } from './scene.js';
 
 export const FigmaPluginAPI = {
 	onFileBrowserLoaded: triggerFunction => {

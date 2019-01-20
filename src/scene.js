@@ -479,6 +479,9 @@ export const getNode = node => {
 };
 
 export const scene = {
+	getNodeById: function(nodeId) {
+		return getNode(nodeId);
+	},
 	zoomOnNodes: function(nodes) {
 		const selectedNodes = Object.keys(App._state.mirror.sceneGraphSelection);
 		if (nodes.length === 0) return;
