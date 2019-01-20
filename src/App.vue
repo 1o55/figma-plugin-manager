@@ -1,5 +1,5 @@
 <template lang="pug">
-	#pluginManager
+	#pluginManager.js-fullscreen-prevent-event-capture
 		modal(name='pluginManagerModal' ref='modal' @opened='openModal' @closed='modalClosed' draggable='.modal-header' width='460' height='auto' maxHeight='642')
 			.modal-header.header-large
 				.modal-tabs
