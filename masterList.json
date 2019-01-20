@@ -35,4 +35,11 @@
 		"hash": "4d85fefcd8e1217625796f2264c97a9a4bc7afe85bda8ee363c5d24992c3337a",
 		"manifest": "https://cdes.github.io/figma-advanced-rename-plugin/dist/manifest.json"
 	}
+	,
+	{
+		"id": "figma-arabic-support-plugin",
+		"publishDate": "1/20/2019",
+		"hash": "88338d0e53ad96f38e9214e004f86e8b22c51b2d4d1689077e6f8d31012e66e0",
+		"manifest": "https://cdes.github.io/figma-arabic-support-plugin/manifest.json"
+	}
 ]
