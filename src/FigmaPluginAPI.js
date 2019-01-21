@@ -1,6 +1,7 @@
 import { scene } from './scene.js';
 
 export const FigmaPluginAPI = {
+	scene: scene,
 	onFileBrowserLoaded: triggerFunction => {
 		window.addEventListener('fileBrowserLoaded', () => {
 			triggerFunction();
@@ -66,6 +67,9 @@ export const FigmaPluginAPI = {
 		});
 	},
 	createContextMenuItem: {
+		Canvas: (itemLabel, triggerFunction, condition, shortcut, subMenuItems) => {
+			addMenuItem('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', itemLabel, triggerFunction, condition, shortcut, subMenuItems);
+		},
 		Selection: (itemLabel, triggerFunction, condition, shortcut, subMenuItems) => {
 			addMenuItem(
 				'DROPDOWN_TYPE_SELECTION_CONTEXT_MENU',
@@ -75,9 +79,6 @@ export const FigmaPluginAPI = {
 				shortcut,
 				subMenuItems
 			);
-		},
-		Canvas: (itemLabel, triggerFunction, condition, shortcut, subMenuItems) => {
-			addMenuItem('DROPDOWN_TYPE_CANVAS_CONTEXT_MENU', itemLabel, triggerFunction, condition, shortcut, subMenuItems);
 		},
 		ObjectsPanel: (itemLabel, triggerFunction, condition, shortcut, subMenuItems) => {
 			addMenuItem(
@@ -155,8 +156,7 @@ export const FigmaPluginAPI = {
 			  })
 			: null;
 		window.App._dispatch(toast);
-	},
-	scene: scene
+	}
 };
 
 const addMenuItem = (menuType, itemLabel, triggerFunction, condition, shortcut, subMenuItems) => {
@@ -200,12 +200,7 @@ const injectMenuItem = (menuType, isSubmenu, itemLabel, triggerFunction, shortcu
 	labelDiv.innerText = itemLabel;
 	newMenuItem.appendChild(labelDiv);
 	if (shortcut && !subMenuItems) {
-		let shortcutText = '';
-		shortcutText += shortcut.control ? '⌃' : '';
-		shortcutText += shortcut.option ? '⌥' : '';
-		shortcutText += shortcut.shift ? '⇧' : '';
-		shortcutText += shortcut.command ? '⌘' : '';
-		shortcutText += shortcut.key ? shortcut.key.toUpperCase() : '';
+		const shortcutText = createShortcutText(shortcut);
 		if (shortcutText !== '') {
 			const shortcutDiv = document.createElement('div');
 			shortcutDiv.className = 'plugin-dropdown-option-shortcut';
@@ -228,12 +223,7 @@ const injectMenuItem = (menuType, isSubmenu, itemLabel, triggerFunction, shortcu
 			labelDiv.innerText = subMenuItem.itemLabel;
 			item.appendChild(labelDiv);
 			if (subMenuItem.shortcut) {
-				let shortcutText = '';
-				shortcutText += subMenuItem.shortcut.control ? '⌃' : '';
-				shortcutText += subMenuItem.shortcut.option ? '⌥' : '';
-				shortcutText += subMenuItem.shortcut.shift ? '⇧' : '';
-				shortcutText += subMenuItem.shortcut.command ? '⌘' : '';
-				shortcutText += subMenuItem.shortcut.key ? subMenuItem.shortcut.key.toUpperCase() : '';
+				const shortcutText = createShortcutText(shortcut);
 				if (shortcutText !== '') {
 					const shortcutDiv = document.createElement('div');
 					shortcutDiv.className = 'plugin-dropdown-option-shortcut';
@@ -348,16 +338,55 @@ const injectMenuItem = (menuType, isSubmenu, itemLabel, triggerFunction, shortcu
 };
 
 const addKeyboardShortcutInFile = (focusTarget, shortcut, triggerFunction) => {
-	focusTarget.addEventListener('keydown', e => {
-		if (
-			e.metaKey !== !shortcut.command &&
-			e.shiftKey !== !shortcut.shift &&
-			e.ctrlKey !== !shortcut.control &&
-			e.altKey !== !shortcut.option &&
-			e.key.toLowerCase() === shortcut.key.toLowerCase()
-		) {
-			e.preventDefault();
-			triggerFunction();
+	if (shortcut.mac && shortcut.windows) {
+		focusTarget.addEventListener('keydown', e => {
+			if (navigator.platform === 'MacIntel') {
+				shortcut = shortcut.mac;
+				if (
+					e.metaKey !== !shortcut.command &&
+					e.shiftKey !== !shortcut.shift &&
+					e.ctrlKey !== !shortcut.control &&
+					e.altKey !== !shortcut.option &&
+					e.key.toLowerCase() === shortcut.key.toLowerCase()
+				) {
+					e.preventDefault();
+					triggerFunction();
+				}
+			}
+			if (navigator.platform === 'Win32' || navigator.platform === 'Win64') {
+				shortcut = shortcut.windows;
+				if (
+					e.shiftKey !== !shortcut.shift &&
+					e.ctrlKey !== !shortcut.control &&
+					e.altKey !== !shortcut.alt &&
+					e.key.toLowerCase() === shortcut.key.toLowerCase()
+				) {
+					e.preventDefault();
+					triggerFunction();
+				}
+			}
+		});
+	}
+};
+
+const createShortcutText = shortcut => {
+	let shortcutText = '';
+	if (shortcut.mac && shortcut.windows) {
+		if (navigator.platform === 'MacIntel') {
+			shortcut = shortcut.mac;
+			shortcutText += shortcut.control ? '⌃' : '';
+			shortcutText += shortcut.option ? '⌥' : '';
+			shortcutText += shortcut.shift ? '⇧' : '';
+			shortcutText += shortcut.command ? '⌘' : '';
+			shortcutText += shortcut.key ? shortcut.key.toUpperCase() : '';
 		}
-	});
+		if (navigator.platform === 'Win32' || navigator.platform === 'Win64') {
+			shortcut = shortcut.windows;
+			shortcutText += shortcut.control ? 'Ctrl+' : '';
+			shortcutText += shortcut.alt ? 'Alt+' : '';
+			shortcutText += shortcut.shift ? 'Shift+' : '';
+			shortcutText += shortcut.key ? shortcut.key.toUpperCase() : '';
+		}
+	}
+	return shortcutText;
 };
