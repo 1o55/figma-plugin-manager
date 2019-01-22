@@ -10,6 +10,11 @@ module.exports = {
 		config.plugins.delete('prefetch');
 	},
 	configureWebpack: {
+		resolve: {
+			alias: {
+				vue$: 'vue/dist/vue.esm.js'
+			}
+		},
 		output: {
 			jsonpFunction: 'pluginManager'
 		},

@@ -1,4 +1,4 @@
-# Create UI
+# UI Functions
 
 Use these functions to set up your plugin and insert menu items for users to interact with. Plugins are recommended to have at least a Plugins menu item, and optionally add a context menu item and/or keyboard shortcut if necessary.
 
@@ -151,6 +151,66 @@ figmaPlugin.createKeyboardShortcut(
 );
 ```
 
+## showUI
+
+Show a Figma styled modal where you can attach your UI onto.
+
+<img src="images/modal.jpg" width="400">
+
+```javascript
+figmaPlugin.showUI(modalTitle, callback, width, height, positionX, positionY, draggable);
+```
+
+- **modalTitle** (`String`): The title to show on the modal header.
+- **callback** (`Function`): The callback function that returns after the modal is opened. `modalElement` is passed as an argument to allow UI attachment (See example below).
+- **width (optional)** (`Number`): Width of the modal in px. Default: `300`
+- **height (optional)** (`Number || String`): Height of the modal in px or 'auto' (Height of the inner elements). Default: `auto`
+- **positionX (optional)** (`Number`): Horizontal position in % relative to the screen, ranges from 0 to 1. Default: `0.5` (Center of the screen)
+- **positionY (optional)** (`Number`): Vertical position in % relative to the screen, ranges from 0 to 1. Default: `0.5` (Center of the screen)
+- **draggable (optional)** (`Boolean`): Whether the modal is draggable. A non-draggable modal also comes with a dark overlay. Default: `true`
+
+<!-- prettier-ignore -->
+```javascript
+// Attaching UI using pure HTML/Javascript
+figmaPlugin.showUI(
+	'Hello world',
+	(modalElement) => {
+		const UI = document.createElement('div');
+		UI.innerHTML = '<h1>Hello world</h1>';
+		modalElement.parentNode.replaceChild(UI, modalElement);
+	}
+);
+
+// Attaching UI using React (React and ReactDOM are available in figmaPlugin.React and figmaPlugin.ReactDOM)
+figmaPlugin.showUI(
+	'Hello world',
+	(modalElement) => {
+		figmaPlugin.ReactDOM.render('Hello, world!', modalElement);
+	}
+);
+
+// Attaching UI using Vue (Vue is available in figmaPlugin.Vue)
+figmaPlugin.showUI(
+	'Hello world',
+	(modalElement) => {
+		new figmaPlugin.vue({
+			el: modalElement,
+			template: `<h1>Hello world</h1>`
+		})
+	}
+);
+```
+
+## hideUI
+
+Hide an opened modal by providing its title.
+
+```javascript
+figmaPlugin.hideUI(modalTitle);
+```
+
+- **modalTitle** (`String`): The title of the modal you want to hide.
+
 ## addTooltip
 
 Attach a hover tooltip to a DOM element in your UI.
@@ -182,7 +242,7 @@ figmaPlugin.showToast(
 ```
 
 - **message** (`String`): Message to show in the toast.
-- **timeoutInSeconds (optional)** (`Number`): Number of seconds the toast will stay on the screen. (Default: 3)
+- **timeoutInSeconds (optional)** (`Number`): Number of seconds the toast will stay on the screen. Default: `3`
 - **buttonText (optional)** (`String`): The label of the action button. Must be accompanied by `buttonAction`.
 - **buttonAction (optional)** (`Function`): Function to trigger when the action button is clicked. Must be accompanied by `buttonText`.
 

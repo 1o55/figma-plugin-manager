@@ -195,6 +195,8 @@ button.button {
 .v--modal-overlay {
 	height: 0 !important;
 	width: 0 !important;
+	background-color: rgba(0, 0, 0, 0.3) !important;
+	z-index: 11 !important;
 }
 
 .overlay-fade-enter-active,
@@ -202,7 +204,6 @@ button.button {
 	transition: all 0s !important;
 }
 
-.modal,
 .v--modal.v--modal-box {
 	-webkit-font-smoothing: antialiased;
 	user-select: none;

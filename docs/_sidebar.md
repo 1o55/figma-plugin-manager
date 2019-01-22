@@ -1,6 +1,7 @@
 <!-- prettier-ignore -->
 * API Documentation
 
-	* [Create UI](create)
+	* [UI Functions](ui)
 	* [Scene](scene)
 	* [Events](events)
+	* [UI Frameworks](frameworks)

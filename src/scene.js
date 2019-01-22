@@ -4,7 +4,7 @@ export const getNode = node => {
 	if (sceneNode.parent) {
 		Object.defineProperty(newNode, 'parent', {
 			get: function() {
-				return getNode(App, sceneNode.parent);
+				return getNode(sceneNode.parent);
 			}
 		});
 	}
@@ -475,7 +475,25 @@ export const getNode = node => {
 	if (sceneNode.type === 'BOOLEAN_OPERATION') {
 		newNode.booleanOperation = sceneNode.booleanOperation;
 	}
+	if (newNode.children) {
+		newNode.getAllDescendents = () => getAllDescendents(newNode);
+	}
 	return newNode;
+};
+
+const getAllDescendents = node => {
+	let descendents = [];
+	const addToDescendents = node => {
+		if (node.children) {
+			for (let i = 0; i < node.children.length; i++) {
+				const thisNode = node.children[i];
+				descendents.push(thisNode);
+				addToDescendents(thisNode);
+			}
+		}
+	};
+	addToDescendents(node);
+	return descendents;
 };
 
 export const scene = {
@@ -493,7 +511,6 @@ export const scene = {
 		if (selectedNodes.length > 0) App.sendMessage('addToSelection', { nodeIds: selectedNodes });
 	},
 	panToNode: function(node) {
-		if (nodes.length === 0) return;
 		node = typeof node === 'object' ? node.id : node;
 		App.panToNode(node);
 	},
@@ -519,13 +536,14 @@ Object.defineProperties(scene, {
 			return Object.keys(App._state.mirror.sceneGraphSelection).map(nodeId => getNode(nodeId));
 		},
 		set: function(selections) {
-			if (selections === []) {
+			if (selections.length === 0) {
 				App.sendMessage('clearSelection');
 				return;
 			}
 			selections = typeof selections[0] === 'object' ? selections.map(selection => selection.id) : selections;
 			App.sendMessage('clearSelection');
 			App.sendMessage('addToSelection', { nodeIds: selections });
+			App.fromFullscreen._listenersByEvent.scrollToNode[0]({ nodeId: selections[0] });
 		}
 	}
 });

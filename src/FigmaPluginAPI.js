@@ -1,6 +1,17 @@
 import { scene } from './scene.js';
+import Vue from 'vue';
+import VModal from 'vue-js-modal';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+Vue.config.productionTip = false;
+Vue.use(VModal, { dynamic: true, injectModalsContainer: true });
+window.vueInstance = new Vue();
 
 export const FigmaPluginAPI = {
+	Vue: Vue,
+	React: React,
+	ReactDOM: ReactDOM,
 	scene: scene,
 	onFileBrowserLoaded: triggerFunction => {
 		window.addEventListener('fileBrowserLoaded', () => {
@@ -156,6 +167,53 @@ export const FigmaPluginAPI = {
 			  })
 			: null;
 		window.App._dispatch(toast);
+	},
+	showUI: (modalTitle, callback, width, height, positionX, positionY, draggable) => {
+		width = width ? width : 300;
+		height = height ? height : 'auto';
+		positionX = positionX ? positionX : 0.5;
+		positionY = positionY ? positionY : 0.5;
+		draggable = draggable !== false ? '.modal-header' : false;
+		vueInstance.$modal.hide(modalTitle);
+		vueInstance.$modal.show(
+			{
+				template: `
+					<div class='modal'>
+						<div class='modal-header'>
+							${modalTitle}
+							<div class='modal-close-button' @click="$emit('close')"></div>
+						</div>
+						<div class='modal-content'>
+							<div></div>
+						</div>
+					</div>
+			`
+			},
+			{},
+			{ name: modalTitle, draggable: draggable, width: width, height: height, pivotX: positionX, pivotY: positionY },
+			{
+				opened: e => {
+					if (!draggable) {
+						const overlay = document.getElementsByClassName('v--modal-overlay')[0];
+						overlay.style.setProperty('width', '100%', 'important');
+						overlay.style.setProperty('height', '100%', 'important');
+					}
+					callback(e.ref.children[0].children[1].children[0]);
+				}
+			}
+		);
+		if (document.querySelector('div[class*="nav-"]') === null) {
+			FigmaPluginAPI.onFileBrowserLoaded(() => {
+				vueInstance.$modal.hide(modalTitle);
+			});
+		} else {
+			FigmaPluginAPI.onFileBrowserUnloaded(() => {
+				vueInstance.$modal.hide(modalTitle);
+			});
+		}
+	},
+	hideUI: modalTitle => {
+		vueInstance.$modal.hide(modalTitle);
 	}
 };
 
@@ -341,25 +399,23 @@ const addKeyboardShortcutInFile = (focusTarget, shortcut, triggerFunction) => {
 	if (shortcut.mac && shortcut.windows) {
 		focusTarget.addEventListener('keydown', e => {
 			if (navigator.platform === 'MacIntel') {
-				shortcut = shortcut.mac;
 				if (
-					e.metaKey !== !shortcut.command &&
-					e.shiftKey !== !shortcut.shift &&
-					e.ctrlKey !== !shortcut.control &&
-					e.altKey !== !shortcut.option &&
-					e.key.toLowerCase() === shortcut.key.toLowerCase()
+					e.metaKey !== !shortcut.mac.command &&
+					e.shiftKey !== !shortcut.mac.shift &&
+					e.ctrlKey !== !shortcut.mac.control &&
+					e.altKey !== !shortcut.mac.option &&
+					e.key.toLowerCase() === shortcut.mac.key.toLowerCase()
 				) {
 					e.preventDefault();
 					triggerFunction();
 				}
 			}
 			if (navigator.platform === 'Win32' || navigator.platform === 'Win64') {
-				shortcut = shortcut.windows;
 				if (
-					e.shiftKey !== !shortcut.shift &&
-					e.ctrlKey !== !shortcut.control &&
-					e.altKey !== !shortcut.alt &&
-					e.key.toLowerCase() === shortcut.key.toLowerCase()
+					e.shiftKey !== !shortcut.windows.shift &&
+					e.ctrlKey !== !shortcut.windows.control &&
+					e.altKey !== !shortcut.windows.alt &&
+					e.key.toLowerCase() === shortcut.windows.key.toLowerCase()
 				) {
 					e.preventDefault();
 					triggerFunction();

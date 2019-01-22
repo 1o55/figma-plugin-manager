@@ -49,6 +49,21 @@ figmaPlugin.scene.selection([nodeId]);
 - **node** (`Node`): A node object returned by `getNodeById`, `root`, `currentPage` or `selection`.
 - **nodeId** (`String`): A node's ID number, e.g. "1:23"
 
+## node.getAllDescendents
+
+Get and array of all descendents (children, grandchildren, etc.) of a node with children. This is useful for iterating over all nodes inside a subtree without recursion.
+
+```javascript
+// Get all nodes in the document.
+figmaPlugin.scene.root.getAllDescendents();
+
+// Get all nodes in the current page.
+figmaPlugin.scene.currentPage.getAllDescendents();
+
+// Get all descendent nodes of the selected node..
+figmaPlugin.scene.selection[0].getAllDescendents();
+```
+
 ## centerOnPoint
 
 Set the viewport translation and scale values.
@@ -62,7 +77,7 @@ figmaPlugin.scene.centerOnPoint(
 
 - **x** (`Number`): Absolute vertical position on the canvas.
 - **y** (`Number`): Absolute horizontal position on the canvas.
-- **zoomScale (optional)** (`Number`): The zoom level of the viewport. (Default: 1)
+- **zoomScale (optional)** (`Number`): The zoom level of the viewport. Default: `1`
 
 ## panToNode
 

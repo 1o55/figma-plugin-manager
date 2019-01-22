@@ -1,22 +1,16 @@
 import { startMutationObserver } from './mutationObserver';
 import { FigmaPluginAPI } from './FigmaPluginAPI';
-import Vue from 'vue';
 import App from './App.vue';
-import VModal from 'vue-js-modal';
 import shajs from 'sha.js';
 import axios from 'axios';
 
-let masterList = JSON.parse(localStorage.getItem("masterList"));
-
-Vue.config.productionTip = false;
-Vue.use(VModal);
+let masterList = JSON.parse(localStorage.getItem('masterList'));
 
 window.figmaPlugin = FigmaPluginAPI;
-window.vue = Vue;
 const app = document.createElement('div');
 app.id = 'pluginManagerApp';
 document.body.appendChild(app);
-const vue = new Vue({
+const vue = new FigmaPluginAPI.Vue({
 	el: '#pluginManagerApp',
 	render: h => h(App)
 });
@@ -48,7 +42,10 @@ FigmaPluginAPI.onFileBrowserUnloaded(() => {
 	vue.$children[0].hide();
 });
 
-FigmaPluginAPI.createKeyboardShortcut({ shift: true, command: true, key: 'P' }, vue.$children[0].toggleModal);
+FigmaPluginAPI.createKeyboardShortcut(
+	{ mac: { shift: true, command: true, key: 'P' }, windows: { shift: true, control: true, key: 'P' } },
+	vue.$children[0].toggleModal
+);
 
 if (document.querySelector('[data-tooltip-text="Show notifications"]') !== null) {
 	if (document.querySelector('#pluginManagerButton') === null) injectpluginManagerButton();
