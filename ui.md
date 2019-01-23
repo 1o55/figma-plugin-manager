@@ -23,11 +23,73 @@ figmaPlugin.createPluginsMenuItem(
 - **triggerFunction** (`Function`): The function to trigger when the menu item is clicked. If there are sub-menus, this trigger function will not be runned on click.
 - **condition (optional)** (`Function`): Condition that needs to pass for the item to show in the menu. Menu item will only show when this condition function returns `true`. Pass `null` if no condition is needed.
 - **shortcut (optional)** (`Shortcut`): Pass in a keyboard shortcut object to show it alongside the label. Remember to use `createKeyboardShortcut` to actually attach the command to a keyboard shortcut event. Pass `null` if no shortcut is needed to be displayed.
+
+<details><summary>Click to see the Shortcut object format</summary>
+<p>
+
+```
+{
+	mac : {
+		control: <boolean>,
+		option: <boolean>,
+		shift: <boolean>,
+		command: <boolean>,
+		key: <String>
+	},
+	windows: {
+		control: <boolean>,
+		alt: <boolean>,
+		shift: <boolean>,
+		key: <String>
+	}
+}
+```
+
+</p>
+</details>
+
 - **submenuItems (optional)** (`Array`): Pass in an array of `submenuItem` objects to create sub-menu items branching off the menu item. Pass `null` if no sub-menu is needed.
 
+<details><summary>Click to see the submenuItems object format</summary>
+<p>
+
+```
+{
+	itemLabel: <String>,
+	triggerFunction: <Function>,
+	condition: <Function> (optional),
+	shortcut: <Shortcut> (optional)
+}
+```
+
+</p>
+</details>
+
+<!-- prettier-ignore -->
 ```javascript
-// Example code for creating a simple menu item:
-figmaPlugin.createPluginsMenuItem('Hello world!', () => alert('Hello world!'));
+// Example code for creating a simple  Plugins menu item:
+figmaPlugin.createPluginsMenuItem(
+	'Hello world!',
+	() => alert('Hello world!')
+);
+
+// Example code for creating a simple Plugins menu item with sub-menu:
+figmaPlugin.createPluginsMenuItem(
+	'Hello world!',
+	null,
+	null,
+	null,
+	[
+		{
+			itemLabel: 'Hello',
+			triggerFunction: () => alert('Hello')
+		},
+		{
+			itemLabel: 'World',
+			triggerFunction: () => alert('World')
+		}
+	]
+);
 ```
 
 ## createContextMenuItem
@@ -88,11 +150,73 @@ figmaPlugin.createContextMenuItem.Canvas(
 - **triggerFunction** (`Function`): The function to trigger when the menu item is clicked. If there are sub-menus, this trigger function will not be runned on click.
 - **condition (optional)** (`Function`): Condition that needs to pass for the item to show in the menu. Menu item will only show when this condition function returns `true`. Pass `null` if no condition is needed.
 - **shortcut (optional)** (`Shortcut`): Pass in a keyboard shortcut object to show it alongside the label. Remember to use `createKeyboardShortcut` to actually attach the command to a keyboard shortcut event. Pass `null` if no shortcut is needed to be displayed.
+
+<details><summary>Click to see the Shortcut object format</summary>
+<p>
+
+```
+{
+	mac : {
+		control: <boolean>,
+		option: <boolean>,
+		shift: <boolean>,
+		command: <boolean>,
+		key: <String>
+	},
+	windows: {
+		control: <boolean>,
+		alt: <boolean>,
+		shift: <boolean>,
+		key: <String>
+	}
+}
+```
+
+</p>
+</details>
+
 - **submenuItems (optional)** (`Array`): Pass in an array of `submenuItem` objects to create sub-menu items branching off the menu item. Pass `null` if no sub-menu is needed.
 
+<details><summary>Click to see the submenuItems object format</summary>
+<p>
+
+```
+{
+	itemLabel: <String>,
+	triggerFunction: <Function>,
+	condition: <Function> (optional),
+	shortcut: <Shortcut> (optional)
+}
+```
+
+</p>
+</details>
+
+<!-- prettier-ignore -->
 ```javascript
 // Example code for creating a simple Canvas menu item:
-figmaPlugin.createContextMenuItem.Canvas('Hello world!', () => alert('Hello world!'));
+figmaPlugin.createContextMenuItem.Canvas(
+	'Hello world!',
+	() => alert('Hello world!')
+);
+
+// Example code for creating a simple Canvas menu item with sub-menu:
+figmaPlugin.createContextMenuItem.Canvas(
+	'Hello world!',
+	null,
+	null,
+	null,
+	[
+		{
+			itemLabel: 'Hello',
+			triggerFunction: () => alert('Hello')
+		},
+		{
+			itemLabel: 'World',
+			triggerFunction: () => alert('World')
+		}
+	]
+);
 ```
 
 ## createKeyboardShortcut
@@ -112,17 +236,17 @@ figmaPlugin.createKeyboardShortcut(shortcut, triggerFunction);
 ```
 {
 	mac : {
-	control: <boolean>,
-	option: <boolean>,
-	shift: <boolean>,
-	command: <boolean>,
-	key: <String>
+		control: <boolean>,
+		option: <boolean>,
+		shift: <boolean>,
+		command: <boolean>,
+		key: <String>
 	},
 	windows: {
-	control: <boolean>,
-	alt: <boolean>,
-	shift: <boolean>,
-	key: <String>
+		control: <boolean>,
+		alt: <boolean>,
+		shift: <boolean>,
+		key: <String>
 	}
 }
 ```

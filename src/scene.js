@@ -55,7 +55,6 @@ export const getNode = node => {
 	}
 	if (!(sceneNode.type === 'DOCUMENT' || sceneNode.type === 'CANVAS')) {
 		const moreInfo = App.sendMessage('inspectNodeForInteractionTests', { nodeId: sceneNode.guid }).args;
-		newNode.size = moreInfo.size;
 		newNode.absoluteBounds = moreInfo.absoluteBounds;
 		const relativeTransform = moreInfo.relativeTransform;
 		newNode.relativeTransform = [
@@ -90,6 +89,14 @@ export const getNode = node => {
 				setTimeout(() => {
 					const result = App._state.mirror.selectionProperties;
 					Object.defineProperties(newNode, {
+						size: {
+							get: function() {
+								return moreInfo.size;
+							},
+							set: function(val) {
+								App.updateSelectionProperties({ width: val.x, height: val.y });
+							}
+						},
 						opacity: {
 							get: function() {
 								return result.opacity;
