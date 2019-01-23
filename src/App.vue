@@ -61,46 +61,44 @@ export default {
       );
     } else localStorage.setItem("installedPlugins", JSON.stringify([]));
 
-      const loadPlugins = (masterList) => {
-        masterList.forEach(pluginEntry => {
-          const pluginRequest = new XMLHttpRequest();
-          pluginRequest.onload = () => {
-            const plugin = JSON.parse(pluginRequest.responseText);
-            plugin.publishDate = pluginEntry.publishDate;
-            self.plugins.push(plugin);
-          };
-          pluginRequest.open(
-            "GET",
-            pluginEntry.manifest + "?_=" + new Date().getTime()
-          );
-          pluginRequest.send();
-        });
-      }
-
-
-      if (isLocalChromeExtension()) {
-        console.log("Using local masterList.json");
-        const masterListJSON = require('../masterList.json');
-        localStorage.setItem("masterList", JSON.stringify(masterListJSON));
-        loadPlugins(masterListJSON);
-      }
-      else {
-        const masterListUrl = 'https://jachui.github.io/figma-plugin-manager/masterList.json';
-        const masterListRequest = new XMLHttpRequest();
-        masterListRequest.open(
-          "GET",
-          masterListUrl + "?_=" + new Date().getTime()
-        );
-
-        masterListRequest.onload = () => {
-          const masterListJSON = JSON.parse(masterListRequest.responseText);
-          localStorage.setItem("masterList", masterListRequest.responseText);
-          loadPlugins(masterListJSON);
+    const loadPlugins = masterList => {
+      masterList.forEach(pluginEntry => {
+        const pluginRequest = new XMLHttpRequest();
+        pluginRequest.onload = () => {
+          const plugin = JSON.parse(pluginRequest.responseText);
+          plugin.publishDate = pluginEntry.publishDate;
+          self.plugins.push(plugin);
         };
+        pluginRequest.open(
+          "GET",
+          pluginEntry.manifest + "?_=" + new Date().getTime()
+        );
+        pluginRequest.send();
+      });
+    };
 
-        masterListRequest.send();
-      }
+    if (isLocalChromeExtension()) {
+      console.log("Using local masterList.json");
+      const masterListJSON = require("../masterList.json");
+      localStorage.setItem("masterList", JSON.stringify(masterListJSON));
+      loadPlugins(masterListJSON);
+    } else {
+      const masterListUrl =
+        "https://jachui.github.io/figma-plugin-manager/masterList.json";
+      const masterListRequest = new XMLHttpRequest();
+      masterListRequest.open(
+        "GET",
+        masterListUrl + "?_=" + new Date().getTime()
+      );
 
+      masterListRequest.onload = () => {
+        const masterListJSON = JSON.parse(masterListRequest.responseText);
+        localStorage.setItem("masterList", masterListRequest.responseText);
+        loadPlugins(masterListJSON);
+      };
+
+      masterListRequest.send();
+    }
   },
   computed: {
     searchedPlugins() {
